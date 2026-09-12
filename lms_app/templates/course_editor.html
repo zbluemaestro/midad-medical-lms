@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}{% if course %}Edit Course: {{ course.title }}{% else %}New Course{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between pb-6 border-b border-slate-800">
+        <div>
+            <a href="{{ url_for('studio') }}" class="text-xs font-semibold text-slate-400 hover:text-white mb-2 inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i> Back to Studio
+            </a>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                {% if course %}Course Editor: {{ course.title }}{% else %}Create New Course{% endif %}
+            </h1>
+        </div>
+        {% if course %}
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('course_detail', slug=course.slug) }}" target="_blank" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Student View
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Course Metadata Form -->
+    <form method="POST" enctype="multipart/form-data" class="mt-8 space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-slate-700/60 shadow-2xl">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 space-y-5">
+                <!-- Course Title -->
+                <div>
+                    <label for="title" class="block text-sm font-semibold text-slate-200">Course Title *</label>
+                    <input type="text" id="title" name="title" value="{{ course.title if course else '' }}" required
+                           class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                           placeholder="e.g. Masterclass in Generative AI & Automation">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-semibold text-slate-200">Course Overview & Syllabus</label>
+                    <textarea id="description" name="description" rows="4"
+                              class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                              placeholder="Describe what students will master in this course...">{{ course.description if course else '' }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Category -->
+                    <div>
+                        <label for="category" class="block text-sm font-semibold text-slate-200">Category</label>
+                        <input type="text" id="category" name="category" value="{{ course.category if course else 'Technology' }}"
+                               class="mt-1.5 block w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+
+                    <!-- Price -->
+                    <div>
+                        <label for="price" class="block text-sm font-semibold text-slate-200">Price (USD) - 0 for Free</label>
+                        <input type="number" step="0.01" id="price" name="price" value="{{ course.price if course else '0.00' }}"
+                               class="mt-1.5 block w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Publish Toggle -->
+                <div class="flex items-center space-x-3 pt-2">
+                    <input type="checkbox" id="is_published" name="is_published" value="1"
+                           {% if not course or course.is_published %}checked{% endif %}
+                           class="w-5 h-5 rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-emerald-500">
+                    <label for="is_published" class="text-sm font-medium text-slate-300">
+                        Publish Course (Visible to enrolled and new students)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Cover Image Upload -->
+            <div>
+                <label class="block text-sm font-semibold text-slate-200 mb-2">Course Cover Image</label>
+                <div class="rounded-2xl border-2 border-dashed border-slate-700 p-4 text-center bg-slate-900/60">
+                    <img id="cover_preview" src="{{ course.cover_image if course else 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80' }}"
+                         alt="Cover Preview" class="w-full h-40 object-cover rounded-xl mb-4 bg-slate-800">
+                    <label class="cursor-pointer px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition border border-slate-700 block">
+                        <i class="fa-solid fa-cloud-arrow-up mr-1.5 text-blue-400"></i> Upload New Cover
+                        <input type="file" name="cover_file" accept="image/*" class="hidden" onchange="previewImage(event)">
+                    </label>
+                    <p class="text-[11px] text-slate-500 mt-2">Recommended: 1200x600 JPG or PNG (No limit)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPLICIT SAVE BUTTON -->
+        <div class="pt-6 border-t border-slate-800 flex items-center justify-between">
+            {% if course %}
+            <button type="submit" form="delete-course-form" onclick="return confirm('Are you sure you want to delete this course and all its lessons?')" class="text-xs font-semibold text-rose-400 hover:text-rose-300 transition">
+                <i class="fa-solid fa-trash-can mr-1"></i> Delete Course
+            </button>
+            {% else %}
+            <div></div>
+            {% endif %}
+
+            <button type="submit" class="px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Save Course Details
+            </button>
+        </div>
+    </form>
+
+    {% if course %}
+    <form id="delete-course-form" method="POST" action="{{ url_for('delete_course', course_id=course.id) }}" class="hidden"></form>
+
+    <!-- LESSONS SECTION -->
+    <div class="mt-12">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-400"></i> Lectures & Video Lessons
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Upload high-definition video files, lecture notes, and downloadable PDF materials.</p>
+            </div>
+            <a href="{{ url_for('new_lesson', course_id=course.id) }}" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/30 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> Add Lesson
+            </a>
+        </div>
+
+        <div class="space-y-3 mt-6">
+            {% for lesson in lessons %}
+            <div class="glass-card p-4 rounded-xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition">
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 font-bold text-xs flex items-center justify-center border border-blue-500/30">
+                        {{ lesson.order_index }}
+                    </div>
+                    <div>
+                        <span class="text-sm font-semibold text-white block">{{ lesson.title }}</span>
+                        <div class="flex items-center space-x-3 text-xs text-slate-400 mt-1">
+                            {% if lesson.video_url %}
+                                <span class="text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle-play"></i> Video Lecture Attached</span>
+                            {% else %}
+                                <span class="text-slate-500 flex items-center gap-1"><i class="fa-solid fa-video-slash"></i> No Video</span>
+                            {% endif %}
+                            {% if lesson.pdf_url %}
+                                <span class="text-blue-400 flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> PDF Attached</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700">
+                        <i class="fa-solid fa-pen"></i> Edit
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_lesson', lesson_id=lesson.id) }}" onsubmit="return confirm('Remove this lesson?')">
+                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-xs font-semibold text-rose-400 border border-rose-800/40">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-8 text-center glass-card rounded-xl text-slate-400 text-sm">
+                No lessons created yet. Click "+ Add Lesson" to upload your first lecture video!
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- QUIZZES SECTION -->
+    <div class="mt-12">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-question text-amber-400"></i> Interactive Quizzes & Assessments
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Design multiple-choice exams with automated instant grading.</p>
+            </div>
+            <a href="{{ url_for('new_quiz', course_id=course.id) }}" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-lg shadow-amber-500/30 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> Create Quiz
+            </a>
+        </div>
+
+        <div class="space-y-3 mt-6">
+            {% for quiz in quizzes %}
+            <div class="glass-card p-4 rounded-xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition">
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center border border-amber-500/30">
+                        <i class="fa-solid fa-question"></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-semibold text-white block">{{ quiz.title }}</span>
+                        <span class="text-xs text-slate-400">Passing Grade: {{ quiz.passing_percentage }}%</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700">
+                        <i class="fa-solid fa-pen"></i> Edit Questions
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" onsubmit="return confirm('Delete this quiz?')">
+                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-xs font-semibold text-rose-400 border border-rose-800/40">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-8 text-center glass-card rounded-xl text-slate-400 text-sm">
+                No quizzes added yet. Click "+ Create Quiz" to create interactive tests for your students!
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function previewImage(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('cover_preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

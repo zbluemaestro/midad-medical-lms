@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ settings.site_name }} - {{ settings.tagline }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-transparent to-transparent pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-6">
+            <i class="fa-solid fa-bolt"></i>
+            <span>{{ settings.hero_badge or "Next-Generation Learning" }}</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight">
+            {{ settings.hero_heading }}
+        </h1>
+        <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed">
+            {{ settings.hero_subheading }}
+        </p>
+
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a href="#courses" class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-xl shadow-blue-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-play"></i> Explore Courses
+            </a>
+            {% if not current_user %}
+            <a href="{{ url_for('register') }}" class="px-6 py-3.5 rounded-xl glass-card hover:bg-slate-800 text-slate-200 font-semibold transition border border-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> Join as Student
+            </a>
+            {% elif current_user.role in ['instructor', 'super_admin'] %}
+            <a href="{{ url_for('new_course') }}" class="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-xl shadow-emerald-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Create Course
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Courses Catalog Section -->
+<section id="courses" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-800 gap-4">
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Available Courses</h2>
+            <p class="text-sm text-slate-400 mt-1">Enroll in self-paced video lectures and test your knowledge with interactive exams.</p>
+        </div>
+        <span class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
+            {{ courses | length }} Active Courses
+        </span>
+    </div>
+
+    <!-- Course Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+        {% for course in courses %}
+        <div class="glass-card rounded-2xl overflow-hidden hover:border-blue-500/40 transition duration-300 flex flex-col group shadow-xl">
+            <!-- Cover Photo -->
+            <div class="h-52 w-full overflow-hidden relative bg-slate-900">
+                <img src="{{ course.cover_image }}" alt="{{ course.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-blue-300 border border-white/10">
+                    {{ course.category }}
+                </div>
+                <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-400 border border-white/10">
+                    {% if course.price > 0 %}${{ "%.2f"|format(course.price) }}{% else %}Free Access{% endif %}
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 flex flex-col flex-grow">
+                <div class="flex items-center space-x-2 text-xs text-slate-400 mb-2">
+                    <i class="fa-solid fa-user-tie text-blue-400"></i>
+                    <span>{{ course.instructor_name }}</span>
+                </div>
+
+                <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition leading-snug">
+                    <a href="{{ url_for('course_detail', slug=course.slug) }}">{{ course.title }}</a>
+                </h3>
+
+                <p class="text-sm text-slate-400 mt-3 line-clamp-2 leading-relaxed flex-grow">
+                    {{ course.description }}
+                </p>
+
+                <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-video text-blue-400"></i> {{ course.lesson_count }} Lectures
+                    </span>
+                    <a href="{{ url_for('course_detail', slug=course.slug) }}" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
+                        View Course <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full py-16 text-center">
+            <div class="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center mx-auto text-slate-500 text-2xl mb-4">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">No courses published yet</h3>
+            <p class="text-sm text-slate-400 mt-1">Sign in as an instructor or super admin to publish your first course.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Result: {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Result Header Card -->
+    <div class="glass-card p-8 rounded-3xl border {% if passed %}border-emerald-500/50 bg-emerald-950/20{% else %}border-rose-500/50 bg-rose-950/20{% endif %} text-center shadow-2xl space-y-4">
+        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl
+            {% if passed %}bg-emerald-500/20 text-emerald-400 border border-emerald-500/40{% else %}bg-rose-500/20 text-rose-400 border border-rose-500/40{% endif %}">
+            {% if passed %}<i class="fa-solid fa-trophy"></i>{% else %}<i class="fa-solid fa-rotate-left"></i>{% endif %}
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-white">
+            {% if passed %}Congratulations, You Passed!{% else %}Assessment Incomplete{% endif %}
+        </h1>
+
+        <div class="text-4xl font-black {% if passed %}text-emerald-400{% else %}text-rose-400{% endif %}">
+            {{ percent }}%
+        </div>
+
+        <p class="text-sm text-slate-300">
+            You scored <strong>{{ user_score }}</strong> out of <strong>{{ total_points }}</strong> points.
+            (Required passing grade: {{ quiz.passing_percentage }}%)
+        </p>
+
+        <div class="flex items-center justify-center gap-4 pt-4">
+            <a href="{{ url_for('learn_course', slug=course.slug) }}" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition">
+                <i class="fa-solid fa-arrow-left mr-1.5"></i> Return to Course Lectures
+            </a>
+            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition">
+                <i class="fa-solid fa-rotate-right mr-1.5"></i> Retake Exam
+            </a>
+        </div>
+    </div>
+
+    <!-- Question-by-Question Breakdown -->
+    <div class="mt-10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2 pb-3 border-b border-slate-800">
+            <i class="fa-solid fa-magnifying-glass text-blue-400"></i> Detailed Answer Breakdown
+        </h2>
+
+        {% for item in feedback %}
+        <div class="glass-card p-6 rounded-2xl border {% if item.is_correct %}border-emerald-900/60 bg-emerald-950/10{% else %}border-rose-900/60 bg-rose-950/10{% endif %} space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider {% if item.is_correct %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                    {% if item.is_correct %}<i class="fa-solid fa-circle-check mr-1"></i> Correct (+{{ item.points_earned }} pts){% else %}<i class="fa-solid fa-circle-xmark mr-1"></i> Incorrect (0 pts){% endif %}
+                </span>
+            </div>
+
+            <h3 class="text-base font-semibold text-white leading-snug">
+                {{ item.question_text }}
+            </h3>
+
+            <div class="space-y-1.5 text-xs">
+                {% for opt in item.options %}
+                <div class="p-2.5 rounded-lg flex items-center justify-between
+                    {% if loop.index0 == item.correct_index %} bg-emerald-950/50 border border-emerald-700/50 text-emerald-200 font-semibold
+                    {% elif loop.index0 == item.selected_index and not item.is_correct %} bg-rose-950/50 border border-rose-700/50 text-rose-300 font-semibold
+                    {% else %} bg-slate-900/40 text-slate-400 {% endif %}">
+                    <span>{{ opt }}</span>
+                    {% if loop.index0 == item.correct_index %}
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase ml-2"><i class="fa-solid fa-check"></i> Correct Answer</span>
+                    {% elif loop.index0 == item.selected_index and not item.is_correct %}
+                        <span class="text-[10px] text-rose-400 font-bold uppercase ml-2"><i class="fa-solid fa-xmark"></i> Your Selection</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if item.explanation %}
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 mt-2">
+                <strong class="text-blue-300">Explanation:</strong> {{ item.explanation }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

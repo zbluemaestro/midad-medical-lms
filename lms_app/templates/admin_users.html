@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}User Management & Roles - Super Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-800 gap-4">
+        <div>
+            <div class="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Super Admin Portal</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">User Management & Instructor Roles</h1>
+            <p class="text-sm text-slate-400 mt-1">
+                Promote signed-up students to <strong>Course Creators</strong> so they can upload lessons and quizzes without accessing website settings.
+            </p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 border border-slate-700">
+                Total Users: {{ users | length }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Scoped Roles Explanation Box -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+        <div class="glass-card p-5 rounded-2xl border-l-4 border-amber-500">
+            <div class="text-amber-400 font-bold text-sm flex items-center gap-2">
+                <i class="fa-solid fa-crown"></i> Super Admin (You)
+            </div>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                Full master authority. Can edit website settings, change brand colors, promote/demote users, and manage all platform courses.
+            </p>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border-l-4 border-emerald-500">
+            <div class="text-emerald-400 font-bold text-sm flex items-center gap-2">
+                <i class="fa-solid fa-chalkboard-user"></i> Course Creator (Instructor)
+            </div>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                Scoped access. Can build courses, upload unlimited videos/photos, and make quizzes. <strong>Zero access to edit the website itself.</strong>
+            </p>
+        </div>
+        <div class="glass-card p-5 rounded-2xl border-l-4 border-blue-500">
+            <div class="text-blue-400 font-bold text-sm flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap"></i> Student (Default)
+            </div>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                Can browse catalog, enroll in courses, stream video lectures, take quizzes, and track learning progress.
+            </p>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+                <thead class="bg-slate-900/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                    <tr>
+                        <th class="px-6 py-4">User</th>
+                        <th class="px-6 py-4">Email</th>
+                        <th class="px-6 py-4">Current Role</th>
+                        <th class="px-6 py-4">Joined On</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    {% for u in users %}
+                    <tr class="hover:bg-slate-800/30 transition">
+                        <td class="px-6 py-4 font-medium text-white flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-300 border border-slate-700">
+                                {{ u.name[0] | upper }}
+                            </div>
+                            <span>{{ u.name }}</span>
+                        </td>
+                        <td class="px-6 py-4 font-mono text-xs text-slate-400">{{ u.email }}</td>
+                        <td class="px-6 py-4">
+                            {% if u.role == 'super_admin' %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                    <i class="fa-solid fa-shield-halved text-[10px] mr-1"></i> Super Admin
+                                </span>
+                            {% elif u.role == 'instructor' %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                    <i class="fa-solid fa-pen-ruler text-[10px] mr-1"></i> Course Creator
+                                </span>
+                            {% else %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                    <i class="fa-solid fa-graduation-cap text-[10px] mr-1"></i> Student
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-500">{{ u.created_at }}</td>
+                        <td class="px-6 py-4 text-right">
+                            {% if u.id != current_user.id %}
+                                {% if u.role == 'student' %}
+                                    <form method="POST" action="{{ url_for('change_user_role', user_id=u.id) }}" class="inline">
+                                        <input type="hidden" name="role" value="instructor">
+                                        <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition shadow-md shadow-emerald-600/30 flex items-center gap-1.5 ml-auto">
+                                            <i class="fa-solid fa-arrow-up"></i> Promote to Course Creator
+                                        </button>
+                                    </form>
+                                {% elif u.role == 'instructor' %}
+                                    <form method="POST" action="{{ url_for('change_user_role', user_id=u.id) }}" class="inline">
+                                        <input type="hidden" name="role" value="student">
+                                        <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition border border-slate-700 flex items-center gap-1.5 ml-auto">
+                                            <i class="fa-solid fa-arrow-down"></i> Demote to Student
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-xs text-slate-500 italic">Current Session</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - {{ settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <!-- Main Column -->
+        <div class="lg:col-span-2 space-y-8">
+            <div>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    {{ course.category }}
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-3 leading-tight">
+                    {{ course.title }}
+                </h1>
+                <p class="text-sm text-slate-400 mt-2 flex items-center gap-2">
+                    <i class="fa-solid fa-user-tie text-blue-400"></i> Instructor: <span class="text-white font-medium">{{ course.instructor_name }}</span>
+                </p>
+            </div>
+
+            <!-- Video/Image Hero -->
+            <div class="rounded-3xl overflow-hidden glass-card border border-slate-700/60 shadow-2xl relative">
+                <img src="{{ course.cover_image }}" alt="{{ course.title }}" class="w-full h-80 sm:h-96 object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Course Overview -->
+            <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-400"></i> About this Course
+                </h2>
+                <div class="text-sm text-slate-300 leading-relaxed space-y-4 whitespace-pre-line">
+                    {{ course.description }}
+                </div>
+            </div>
+
+            <!-- Curriculum / Syllabus -->
+            <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-emerald-400"></i> Course Syllabus ({{ lessons | length }} Lectures)
+                    </h2>
+                </div>
+
+                <div class="space-y-3">
+                    {% for lesson in lessons %}
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 font-bold text-xs flex items-center justify-center border border-blue-500/20">
+                                {{ lesson.order_index }}
+                            </div>
+                            <span class="text-sm font-medium text-slate-200">{{ lesson.title }}</span>
+                        </div>
+                        <i class="fa-solid fa-circle-play text-slate-500 text-sm"></i>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-slate-500">Lectures will be published soon.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Enrollment Card -->
+        <div>
+            <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-700/60 shadow-2xl sticky top-24 space-y-6">
+                <div class="text-center pb-6 border-b border-slate-800">
+                    <div class="text-3xl font-extrabold text-white">
+                        {% if course.price > 0 %}${{ "%.2f"|format(course.price) }} USD{% else %}Free Enrollment{% endif %}
+                    </div>
+                    <span class="text-xs text-emerald-400 font-medium mt-1 block">Full Lifetime Access & Certificate Included</span>
+                </div>
+
+                <div class="space-y-3 text-xs text-slate-300">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-video text-blue-400 w-4"></i> {{ lessons | length }} Video Lectures
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-amber-400 w-4"></i> {{ quizzes | length }} Interactive Quizzes
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-infinity text-purple-400 w-4"></i> Self-paced learning
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-certificate text-emerald-400 w-4"></i> Verified completion record
+                    </div>
+                </div>
+
+                {% if is_enrolled %}
+                <a href="{{ url_for('learn_course', slug=course.slug) }}" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Continue Learning
+                </a>
+                {% else %}
+                <form method="POST" action="{{ url_for('enroll_course', slug=course.slug) }}">
+                    <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Enroll in Course
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

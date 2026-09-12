@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}{% if lesson %}Edit Lesson: {{ lesson.title }}{% else %}New Lesson{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="pb-6 border-b border-slate-800">
+        <a href="{{ url_for('edit_course', course_id=course.id) }}" class="text-xs font-semibold text-slate-400 hover:text-white mb-2 inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Back to {{ course.title }}
+        </a>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            {% if lesson %}Edit Lesson: {{ lesson.title }}{% else %}Upload New Lesson Lecture{% endif %}
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">Add lecture video (unrestricted size), notes, and PDF attachments.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="mt-8 space-y-6 glass-card p-6 sm:p-8 rounded-3xl border border-slate-700/60 shadow-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="sm:col-span-3">
+                <label for="title" class="block text-sm font-semibold text-slate-200">Lesson Title *</label>
+                <input type="text" id="title" name="title" value="{{ lesson.title if lesson else '' }}" required
+                       class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                       placeholder="e.g. Lesson 1: Introduction to Deep Architectures">
+            </div>
+            <div>
+                <label for="order_index" class="block text-sm font-semibold text-slate-200">Lesson Order</label>
+                <input type="number" id="order_index" name="order_index" value="{{ lesson.order_index if lesson else 1 }}"
+                       class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+        </div>
+
+        <!-- VIDEO UPLOAD SECTION (NO SIZE LIMITS) -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <label class="block text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-video text-emerald-400"></i> Video Lecture Upload
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Unrestricted Size
+                        </span>
+                    </label>
+                    <p class="text-xs text-slate-400 mt-0.5">Upload raw MP4, MOV, or WebM video files directly from your computer. No 10MB/25MB caps!</p>
+                </div>
+            </div>
+
+            <div class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center bg-slate-950/40">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500 mb-3 block"></i>
+                <label class="cursor-pointer px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white shadow-md shadow-blue-500/30 transition inline-block">
+                    Choose Video File from Computer
+                    <input type="file" name="video_file" accept="video/*" class="hidden" onchange="showVideoChosen(event)">
+                </label>
+                <div id="video_chosen_label" class="text-xs text-emerald-400 mt-2 font-medium"></div>
+
+                {% if lesson and lesson.video_url %}
+                <div class="mt-4 pt-4 border-t border-slate-800 text-left">
+                    <span class="text-xs font-semibold text-slate-400 block mb-1">Current Video:</span>
+                    <code class="text-xs text-blue-300 bg-slate-900 px-2 py-1 rounded block truncate">{{ lesson.video_url }}</code>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Alternative Video URL -->
+            <div>
+                <label for="video_url" class="block text-xs font-medium text-slate-400">Or External Video Streaming URL (YouTube, Vimeo, Cloud Storage)</label>
+                <input type="text" id="video_url" name="video_url" value="{{ lesson.video_url if lesson else '' }}"
+                       class="mt-1 block w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                       placeholder="https://...mp4">
+            </div>
+        </div>
+
+        <!-- PDF LECTURE NOTES SECTION -->
+        <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-rose-400"></i> Downloadable PDF Lecture Notes
+                </label>
+                <p class="text-xs text-slate-400 mt-0.5">Attach slides or supplementary reading material for students.</p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <label class="cursor-pointer px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 inline-block">
+                    <i class="fa-solid fa-paperclip mr-1.5 text-blue-400"></i> Select PDF File
+                    <input type="file" name="pdf_file" accept=".pdf" class="hidden" onchange="showPdfChosen(event)">
+                </label>
+                <span id="pdf_chosen_label" class="text-xs text-slate-400">
+                    {% if lesson and lesson.pdf_url %}Attached: {{ lesson.pdf_url }}{% else %}No PDF attached yet{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- LESSON NOTES -->
+        <div>
+            <label for="notes" class="block text-sm font-semibold text-slate-200">Lecture Summary & Notes</label>
+            <textarea id="notes" name="notes" rows="6"
+                      class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono"
+                      placeholder="Write lecture notes, key takeaways, or code examples for your students...">{{ lesson.notes if lesson else '' }}</textarea>
+        </div>
+
+        <!-- EXPLICIT SAVE BUTTON -->
+        <div class="pt-6 border-t border-slate-800 flex items-center justify-between">
+            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="text-xs font-semibold text-slate-400 hover:text-white">
+                Cancel
+            </a>
+            <button type="submit" class="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Save Lesson Lecture
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function showVideoChosen(event) {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+        document.getElementById('video_chosen_label').innerHTML = `<i class="fa-solid fa-circle-check"></i> Selected: ${file.name} (${sizeMb} MB)`;
+    }
+}
+
+function showPdfChosen(event) {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        document.getElementById('pdf_chosen_label').innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> ${file.name}</span>`;
+    }
+}
+</script>
+{% endblock %}

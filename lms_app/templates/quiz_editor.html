@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}{% if quiz %}Edit Quiz: {{ quiz.title }}{% else %}Create New Quiz{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="pb-6 border-b border-slate-800">
+        <a href="{{ url_for('edit_course', course_id=course.id) }}" class="text-xs font-semibold text-slate-400 hover:text-white mb-2 inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Back to {{ course.title }}
+        </a>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            {% if quiz %}Edit Quiz: {{ quiz.title }}{% else %}Interactive Quiz & Exam Builder{% endif %}
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">Design questions, multiple-choice options, and define correct answer keys for automated grading.</p>
+    </div>
+
+    <form id="quiz-form" method="POST" class="mt-8 space-y-8 glass-card p-6 sm:p-8 rounded-3xl border border-slate-700/60 shadow-2xl">
+        <input type="hidden" id="questions_payload" name="questions_payload" value="">
+
+        <!-- Quiz Meta -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-2">
+                <label for="title" class="block text-sm font-semibold text-slate-200">Quiz Title *</label>
+                <input type="text" id="title" name="title" value="{{ quiz.title if quiz else '' }}" required
+                       class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                       placeholder="e.g. Chapter 1: Comprehensive Assessment">
+            </div>
+            <div>
+                <label for="passing_percentage" class="block text-sm font-semibold text-slate-200">Passing Grade (%)</label>
+                <input type="number" id="passing_percentage" name="passing_percentage" value="{{ quiz.passing_percentage if quiz else 70 }}" min="10" max="100" required
+                       class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+        </div>
+
+        <div>
+            <label for="lesson_id" class="block text-sm font-semibold text-slate-200">Attach to Specific Lesson (Optional)</label>
+            <select id="lesson_id" name="lesson_id" class="mt-1.5 block w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                <option value="">-- General Course Exam (End of Course) --</option>
+                {% for l in lessons %}
+                <option value="{{ l.id }}" {% if quiz and quiz.lesson_id == l.id %}selected{% endif %}>
+                    Lesson {{ l.order_index }}: {{ l.title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Dynamic Questions List -->
+        <div class="pt-6 border-t border-slate-800">
+            <div class="flex items-center justify-between pb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-list-ol text-amber-400"></i> Questions List
+                </h3>
+                <button type="button" onclick="addQuestion()" class="px-4 py-2 rounded-xl bg-amber-600/30 hover:bg-amber-600/50 text-amber-300 text-xs font-semibold border border-amber-500/30 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus"></i> Add Question
+                </button>
+            </div>
+
+            <div id="questions_container" class="space-y-6 mt-4">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+
+        <!-- EXPLICIT SAVE BUTTON -->
+        <div class="pt-6 border-t border-slate-800 flex items-center justify-between">
+            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="text-xs font-semibold text-slate-400 hover:text-white">
+                Cancel
+            </a>
+            <button type="button" onclick="submitQuizForm()" class="px-8 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm shadow-xl shadow-amber-500/30 transition flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Save Quiz & Questions
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+let questions = {{ questions | tojson | safe }} || [];
+
+if (questions.length === 0) {
+    // Default initial question
+    questions.push({
+        question_text: "What is the primary advantage of autonomous agents in workflow automation?",
+        options: [
+            "Dynamic decision making and real-time tool execution",
+            "Hardcoded script execution only",
+            "Disabling database indexes",
+            "Replacing all human communication"
+        ],
+        correct_option_index: 0,
+        explanation: "Autonomous agents can observe environment outputs, plan actions, and call external APIs dynamically.",
+        points: 10
+    });
+}
+
+function renderQuestions() {
+    const container = document.getElementById('questions_container');
+    container.innerHTML = '';
+
+    questions.forEach((q, qIndex) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4 relative group';
+
+        let optionsHtml = '';
+        q.options.forEach((opt, optIndex) => {
+            const isChecked = (optIndex === q.correct_option_index) ? 'checked' : '';
+            optionsHtml += `
+                <div class="flex items-center space-x-3 mt-2">
+                    <input type="radio" name="correct_${qIndex}" value="${optIndex}" ${isChecked}
+                           onchange="questions[${qIndex}].correct_option_index = ${optIndex}"
+                           class="w-4 h-4 text-emerald-500 bg-slate-950 border-slate-700 focus:ring-emerald-500 cursor-pointer">
+                    <input type="text" value="${escapeHtml(opt)}"
+                           oninput="questions[${qIndex}].options[${optIndex}] = this.value"
+                           placeholder="Option ${String.fromCharCode(65 + optIndex)}"
+                           class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white text-xs focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                    ${q.options.length > 2 ? `
+                    <button type="button" onclick="removeOption(${qIndex}, ${optIndex})" class="text-rose-400 hover:text-rose-300 text-xs px-2">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>` : ''}
+                </div>
+            `;
+        });
+
+        qCard.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                    Question ${qIndex + 1}
+                </span>
+                ${questions.length > 1 ? `
+                <button type="button" onclick="removeQuestion(${qIndex})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">
+                    <i class="fa-solid fa-trash mr-1"></i> Remove
+                </button>` : ''}
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Question Prompt</label>
+                <input type="text" value="${escapeHtml(q.question_text)}"
+                       oninput="questions[${qIndex}].question_text = this.value"
+                       class="block w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                       placeholder="Type your exam question here...">
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-semibold text-slate-300">Answer Options (Select the radio button for the correct answer)</label>
+                    <button type="button" onclick="addOption(${qIndex})" class="text-xs text-blue-400 hover:text-blue-300 font-semibold">
+                        + Add Choice
+                    </button>
+                </div>
+                ${optionsHtml}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
+                <div class="sm:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Explanation / Solution Note (Shown after submission)</label>
+                    <input type="text" value="${escapeHtml(q.explanation || '')}"
+                           oninput="questions[${qIndex}].explanation = this.value"
+                           class="block w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-white text-xs focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                           placeholder="Why is this the correct answer?">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Points</label>
+                    <input type="number" value="${q.points || 10}" min="1"
+                           oninput="questions[${qIndex}].points = parseInt(this.value) || 1"
+                           class="block w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-white text-xs focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                </div>
+            </div>
+        `;
+        container.appendChild(qCard);
+    });
+}
+
+function addQuestion() {
+    questions.push({
+        question_text: "New Question Title",
+        options: ["Choice A", "Choice B", "Choice C", "Choice D"],
+        correct_option_index: 0,
+        explanation: "",
+        points: 10
+    });
+    renderQuestions();
+}
+
+function removeQuestion(index) {
+    questions.splice(index, 1);
+    renderQuestions();
+}
+
+function addOption(qIndex) {
+    questions[qIndex].options.push(`New Option ${String.fromCharCode(65 + questions[qIndex].options.length)}`);
+    renderQuestions();
+}
+
+function removeOption(qIndex, optIndex) {
+    questions[qIndex].options.splice(optIndex, 1);
+    if (questions[qIndex].correct_option_index >= questions[qIndex].options.length) {
+        questions[qIndex].correct_option_index = 0;
+    }
+    renderQuestions();
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function submitQuizForm() {
+    document.getElementById('questions_payload').value = JSON.stringify(questions);
+    document.getElementById('quiz-form').submit();
+}
+
+renderQuestions();
+</script>
+{% endblock %}
