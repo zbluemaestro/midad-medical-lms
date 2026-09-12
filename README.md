@@ -1,68 +1,66 @@
-# Frappe LMS SaaS Engine 🚀
+# Pulse & Midad LMS Platform 🚀
 
-A complete, production-ready, multi-tenant Learning Management System (LMS) SaaS suite based on **Frappe Learning** ([frappe.io/learning](https://frappe.io/learning)) and Frappe Framework v15.
+A complete, production-grade, full-stack Learning Management System (LMS) with **Role-Based Access Control (RBAC)**, **unrestricted media uploads**, and **interactive quiz auto-grading**.
 
-Designed for launching an independent LMS business, hosting multi-tenant academies, or offering private corporate learning portals.
+* **GitHub Repository**: [https://github.com/zbluemaestro/midad-medical-lms](https://github.com/zbluemaestro/midad-medical-lms)
+* **GitHub Pages Preview**: [https://zbluemaestro.github.io/midad-medical-lms/](https://zbluemaestro.github.io/midad-medical-lms/)
+
+---
+
+## 🌟 Key Capabilities
+
+1. **Master Super Admin Control**:
+   * Master access to customize website branding, title, tagline, logo, colors, and landing page.
+   * **User Management Dashboard**: 1-Click promotion of signed-up students to **Course Creators / Instructors**.
+2. **Scoped Course Creator Permissions**:
+   * Promoted instructors can create courses, upload video lectures, attach lecture notes, and design quizzes.
+   * **Strictly Protected**: Course creators are restricted from editing the website itself, platform branding, or other instructors' content (403 Forbidden).
+3. **Unrestricted Media Uploads**:
+   * Removed arbitrary cloud size limits (`MAX_CONTENT_LENGTH = None`).
+   * Native **HTTP 206 Partial Content video streaming** for smooth, instantaneous video scrubbing.
+4. **Explicit "Save" & "Publish" Controls**:
+   * Conspicuous save buttons across all course, lesson, and quiz editors with instant confirmation.
+5. **Interactive Quiz Engine**:
+   * Build exams with multiple choices, point allocations, and explanation feedback.
+   * Instant server-side auto-grading with percentage score cards and detailed breakdowns.
 
 ---
 
 ## 📂 Repository Structure
 
 ```
-frappe_lms_saas/
-├── docker/                      # Multi-Container Development & Staging Stack
-│   ├── docker-compose.yml       # MariaDB 10.8, Redis 7, Frappe Bench v15, LMS, Payments
-│   ├── init-bench.sh            # Automated container initialization & app installer
-│   └── .env.example             # Environment template for local deployment
+├── lms_app/                     # Full-Stack Application (Flask + SQLite + RBAC)
+│   ├── app.py                   # Core Flask app with streaming and role decorators
+│   ├── database.py              # SQLite schema, migrations & seed data
+│   ├── templates/               # 15 Responsive Jinja2 templates (Dark navy UI)
+│   ├── uploads/                 # Local media storage (videos, photos, documents)
+│   ├── tests/                   # Automated unit & integration tests (7/7 passing)
+│   ├── run_website.bat          # 1-Click local Windows launcher (http://localhost:8080)
+│   └── share_online.bat         # 1-Click Cloudflare Tunnel sharing for friends
 │
-├── saas/                        # Multi-Tenant SaaS Engine
-│   ├── create-tenant.sh         # Linux 1-click tenant provisioning script
-│   ├── create-tenant.ps1        # Windows Docker tenant provisioner
-│   ├── list-tenants.sh          # List all active tenant databases and domains
-│   └── backup-tenants.sh        # Automated backup for all tenant databases & media
+├── docs/                        # Static GitHub Pages deployment
+│   ├── index.html               # Live frontend showcase
+│   └── static/                  # Brand assets and sample lecture notes
 │
-├── cloud/                       # Production Linux Cloud VPS Deployment
-│   ├── deploy-vps.sh            # 1-command automated deployment for Ubuntu 22.04/24.04
-│   ├── docker-compose.prod.yml  # Production compose with Nginx, SSL, auto-restart
-│   └── nginx.conf               # High-performance Nginx with Gzip & WebSockets
+├── .github/workflows/           # CI/CD Automation
+│   └── deploy.yml               # Automated testing & GitHub Pages deployment
 │
-├── windows/                     # Windows 11 Tools
-│   ├── setup-windows.ps1        # Docker environment verifier & stack launcher
-│   └── share-tunnel.ps1         # Instant public HTTPS sharing via Cloudflare Tunnel
-│
-├── seeder/                      # Rich Showcase Demo Content
-│   └── seed_saas_showcase.py    # Populates courses, video lessons, quizzes, certificates
-│
-├── tests/                       # Automated Verification Suite
-│   └── test_saas_configs.py     # Unit tests verifying stack configs & script integrity
-│
-├── SAAS_FOUNDER_GUIDE.md        # Complete business, hosting, monetization & operations manual
-└── README.md                    # This document
+└── SAAS_FOUNDER_GUIDE.md        # Comprehensive multi-tenancy & business playbook
 ```
 
 ---
 
-## ⚡ Quick Start: 2 Ways to Launch
+## ⚡ 1-Click Quick Start
 
-### Option 1: Live Cloud VPS (Recommended for Production & Commercial SaaS)
-On a fresh Ubuntu 22.04 or 24.04 LTS server (Hetzner, DigitalOcean, AWS, Linode):
-```bash
-git clone <this-repo> /opt/frappe_lms_saas
-cd /opt/frappe_lms_saas
-sudo bash cloud/deploy-vps.sh lms.yourdomain.com
+### 1. Run Locally (Windows)
+Double-click `lms_app\run_website.bat` or run:
+```powershell
+python lms_app\app.py
 ```
+Open your browser at **[http://localhost:8080](http://localhost:8080)**.
 
-### Option 2: Local Windows 11 + Instant Public Tunnel (Free Demo for Friends/Investors)
-1. Launch the local container cluster:
-   ```powershell
-   powershell -File windows\setup-windows.ps1
-   ```
-2. Generate an instant secure public HTTPS link to share with your friend:
-   ```powershell
-   powershell -File windows\share-tunnel.ps1
-   ```
+* **Master Super Admin Login**: `admin@lms.local` / `AdminPass2026!`
 
----
-
-## 📖 Comprehensive Founder Guide
-For in-depth instructions on multi-tenancy, Stripe payment gateway configuration, white-labeling, certificate issuance, and business models, see [SAAS_FOUNDER_GUIDE.md](./SAAS_FOUNDER_GUIDE.md).
+### 2. Share Live with Your Friend
+Double-click `lms_app\share_online.bat`.
+* Generates a free, public HTTPS link (e.g. `https://xxx.trycloudflare.com`) with zero port forwarding!
