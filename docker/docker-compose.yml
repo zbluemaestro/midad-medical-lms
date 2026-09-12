@@ -1,0 +1,81 @@
+version: "3.8"
+name: frappe-lms-saas
+
+services:
+  mariadb:
+    image: mariadb:10.8
+    container_name: lms-mariadb
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
+      - --max_allowed_packet=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-admin}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-admin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lms-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: lms-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lms-network
+
+  frappe:
+    image: frappe/bench:latest
+    container_name: lms-frappe-bench
+    restart: unless-stopped
+    command: bash /workspace/docker/init-bench.sh
+    environment:
+      - SHELL=/bin/bash
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - SITE_NAME=${SITE_NAME:-lms.localhost}
+      - FRAPPE_BRANCH=${FRAPPE_BRANCH:-version-15}
+    working_dir: /home/frappe
+    volumes:
+      - ..:/workspace
+      - sites-data:/home/frappe/frappe-bench/sites
+      - apps-data:/home/frappe/frappe-bench/apps
+    ports:
+      - "${HTTP_PORT:-8000}:8000"
+      - "${SOCKETIO_PORT:-9000}:9000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lms-network
+
+volumes:
+  mariadb-data:
+    name: lms-mariadb-data
+  redis-data:
+    name: lms-redis-data
+  sites-data:
+    name: lms-sites-data
+  apps-data:
+    name: lms-apps-data
+
+networks:
+  lms-network:
+    name: lms-network
+    driver: bridge

@@ -1,0 +1,15 @@
+{
+  "db_name": "lms_db",
+  "db_type": "mariadb",
+  "developer_mode": 1,
+  "max_file_size": 10737418240,
+  "allow_cors": "*",
+  "file_watcher_port": 6787,
+  "socketio_port": 9000,
+  "webserver_port": 8000,
+  "app_name": "lms",
+  "brand_name": "Midad",
+  "brand_logo": "/assets/midad_lms/midad_brand_logo.svg",
+  "app_include_css": "/assets/midad_lms/midad_dark_blue.css",
+  "app_include_js": "/assets/midad_lms/content_security.js"
+}

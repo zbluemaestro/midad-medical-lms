@@ -1,0 +1,201 @@
+/* ==============================================================================
+ * Midad LMS - Modernized Dark Blue & Gold Theme
+ * Palette: Deep Midnight Navy (#070D1E, #0A1128, #0F1A36) & Golden Bronze (#F59E0B, #D97706)
+ * Typography: Plus Jakarta Sans & Cairo
+ * ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Cairo:wght@400;600;700;800&display=swap');
+
+:root {
+  --midad-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --midad-font-arabic: 'Cairo', var(--midad-font-sans);
+
+  /* Deep Dark Blue Scale */
+  --midad-bg-deepest: #070D1E;
+  --midad-bg-canvas:  #0A1128;
+  --midad-bg-surface: #0F1A36;
+  --midad-bg-card:    #132247;
+  --midad-bg-card-hover: #182C5B;
+  
+  /* Borders & Dividers */
+  --midad-border-subtle: #1E325C;
+  --midad-border-active: #2563EB;
+  --midad-border-gold:   rgba(245, 158, 11, 0.4);
+
+  /* Golden Accents */
+  --midad-gold-light:  #FDE68A;
+  --midad-gold-main:   #F59E0B;
+  --midad-gold-dark:   #D97706;
+  --midad-gold-bronze: #92400E;
+
+  /* Text & Ink */
+  --midad-text-bright:   #F8FAFC;
+  --midad-text-body:     #E2E8F0;
+  --midad-text-muted:    #94A3B8;
+  --midad-text-inactive: #64748B;
+
+  /* Shadows */
+  --midad-shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --midad-shadow-gold: 0 0 20px rgba(245, 158, 11, 0.25);
+}
+
+/* Global Font Application */
+body, button, input, select, textarea, .frappe-control, .desk-sidebar, .course-card {
+  font-family: var(--midad-font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[lang="ar"], [dir="rtl"], .arabic-text {
+  font-family: var(--midad-font-arabic) !important;
+}
+
+/* Base Body and Backgrounds */
+body, #page-lms, .lms-container, .main-section, .desk-body {
+  background-color: var(--midad-bg-canvas) !important;
+  color: var(--midad-text-body) !important;
+}
+
+/* Top Navbar & Header */
+.navbar, .web-header, header, .lms-header {
+  background-color: var(--midad-bg-deepest) !important;
+  border-bottom: 1px solid var(--midad-border-subtle) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Navigation Links & Brand */
+.navbar a, .nav-link, .lms-brand-title {
+  color: var(--midad-text-bright) !important;
+  font-weight: 600 !important;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.navbar a:hover, .nav-link:hover {
+  color: var(--midad-gold-main) !important;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+/* Left Sidebar (LMS & Desk) */
+.sidebar, .desk-sidebar, .lms-sidebar, [role="navigation"] {
+  background-color: var(--midad-bg-surface) !important;
+  border-right: 1px solid var(--midad-border-subtle) !important;
+}
+
+.sidebar .standard-sidebar-item, .sidebar-item {
+  color: var(--midad-text-muted) !important;
+  border-radius: 8px !important;
+  margin: 4px 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease;
+}
+
+.sidebar .standard-sidebar-item.selected, 
+.sidebar .standard-sidebar-item:hover,
+.sidebar-item.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(15, 26, 54, 0.8) 100%) !important;
+  color: var(--midad-gold-light) !important;
+  border-left: 3px solid var(--midad-gold-main) !important;
+}
+
+/* Course Cards, Module Cards & Content Blocks */
+.course-card, .frappe-card, .widget, .card, .dashboard-box {
+  background-color: var(--midad-bg-card) !important;
+  border: 1px solid var(--midad-border-subtle) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--midad-shadow-card) !important;
+  color: var(--midad-text-body) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.course-card:hover, .frappe-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--midad-border-gold) !important;
+  box-shadow: var(--midad-shadow-gold), var(--midad-shadow-card) !important;
+}
+
+/* Course Card Titles */
+.course-title, .card-title, h1, h2, h3, h4 {
+  color: var(--midad-text-bright) !important;
+  letter-spacing: -0.02em;
+}
+
+/* Buttons (Modern Dark Blue with Gold Highlights) */
+.btn-primary, button[type="submit"], .action-btn {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%) !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+/* Special Gold Accent Buttons (e.g. Enroll / Purchase) */
+.btn-gold, .enroll-btn {
+  background: linear-gradient(135deg, var(--midad-gold-main) 0%, var(--midad-gold-dark) 100%) !important;
+  color: #070D1E !important;
+  border: none !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+}
+
+.btn-gold:hover, .enroll-btn:hover {
+  background: linear-gradient(135deg, #FBBF24 0%, var(--midad-gold-main) 100%) !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55) !important;
+}
+
+/* Price Badges */
+.course-price, .badge-price {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: var(--midad-gold-light) !important;
+  border: 1px solid var(--midad-gold-main) !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+}
+
+.badge-free {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #6EE7B7 !important;
+  border: 1px solid #10B981 !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+}
+
+/* Inputs & Form Controls */
+input, textarea, select, .form-control {
+  background-color: var(--midad-bg-deepest) !important;
+  border: 1px solid var(--midad-border-subtle) !important;
+  color: var(--midad-text-bright) !important;
+  border-radius: 8px !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--midad-border-active) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+  outline: none !important;
+}
+
+/* Video Player Canvas Container */
+.video-player, video, .plyr {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--midad-border-subtle) !important;
+  box-shadow: var(--midad-shadow-card) !important;
+  background-color: #000000 !important;
+}
+
+/* Lesson Navigation & Progress Bar */
+.progress-bar-fill, .progress-bar {
+  background: linear-gradient(90deg, #2563EB 0%, var(--midad-gold-main) 100%) !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+}

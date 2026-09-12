@@ -1,0 +1,96 @@
+version: "3.8"
+name: frappe-lms-production
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: lms-prod-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - sites-data:/home/frappe/frappe-bench/sites:ro
+      - certs-data:/etc/letsencrypt
+    depends_on:
+      - frappe
+    networks:
+      - lms-prod-network
+
+  mariadb:
+    image: mariadb:10.8
+    container_name: lms-prod-mariadb
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
+      - --max_allowed_packet=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lms-prod-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: lms-prod-redis
+    restart: always
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lms-prod-network
+
+  frappe:
+    image: frappe/bench:latest
+    container_name: lms-prod-bench
+    restart: always
+    command: bash /workspace/docker/init-bench.sh
+    environment:
+      - SHELL=/bin/bash
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - SITE_NAME=${PRIMARY_DOMAIN}
+      - FRAPPE_BRANCH=version-15
+    working_dir: /home/frappe
+    volumes:
+      - ..:/workspace
+      - sites-data:/home/frappe/frappe-bench/sites
+      - apps-data:/home/frappe/frappe-bench/apps
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lms-prod-network
+
+volumes:
+  mariadb-data:
+    name: lms-prod-mariadb-data
+  redis-data:
+    name: lms-prod-redis-data
+  sites-data:
+    name: lms-prod-sites-data
+  apps-data:
+    name: lms-prod-apps-data
+  certs-data:
+    name: lms-prod-certs-data
+
+networks:
+  lms-prod-network:
+    name: lms-prod-network
+    driver: bridge

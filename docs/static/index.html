@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midad Medical LMS | أكاديمية مداد الطبية</title>
+  <link rel="icon" type="image/svg+xml" href="/static/midad_brand_logo.svg">
+  <link rel="stylesheet" href="/static/midad_dark_blue.css">
+  <style>
+    /* Reset & Base Styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Modern Navbar */
+    .midad-nav {
+      background: #0A1128;
+      border-bottom: 1px solid #1E325C;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+    }
+    .brand-logo-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    }
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title-en {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+    }
+    .brand-title-ar {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #F59E0B;
+      font-family: 'Cairo', serif;
+    }
+
+    /* Role Simulation Switcher */
+    .role-bar {
+      background: #0F1A36;
+      border-bottom: 1px solid #1E325C;
+      padding: 0.6rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+    .role-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .role-chip {
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #1E325C;
+      background: #070D1E;
+      color: #94A3B8;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .role-chip.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #3B82F6;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    }
+    .role-chip.owner.active {
+      background: #D97706;
+      border-color: #F59E0B;
+      color: #070D1E;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Hero */
+    .hero-box {
+      background: linear-gradient(135deg, #0F1A36 0%, #132247 60%, #1E325C 100%);
+      border: 1px solid #233B6E;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .hero-box::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(37, 99, 235, 0) 70%);
+      border-radius: 50%;
+    }
+    .hero-content h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+    .hero-content h1 span {
+      color: #F59E0B;
+    }
+    .hero-content p {
+      font-size: 1.05rem;
+      color: #94A3B8;
+      max-width: 650px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-gold {
+      background: rgba(245, 158, 11, 0.15);
+      color: #FDE68A;
+      border: 1px solid #F59E0B;
+    }
+    .badge-blue {
+      background: rgba(37, 99, 235, 0.2);
+      color: #93C5FD;
+      border: 1px solid #2563EB;
+    }
+
+    /* Course Cards Grid */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: #F59E0B;
+      border-radius: 2px;
+    }
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 3.5rem;
+    }
+    .m-card {
+      background: #0F1A36;
+      border: 1px solid #1E325C;
+      border-radius: 14px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .m-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(245, 158, 11, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+    .m-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    .m-card-icon {
+      font-size: 2rem;
+      background: #132247;
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px solid #1E325C;
+    }
+    .m-card-price {
+      font-size: 1.1rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+    .price-paid {
+      background: rgba(245, 158, 11, 0.15);
+      color: #FDE68A;
+      border: 1px solid #F59E0B;
+    }
+    .price-free {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6EE7B7;
+      border: 1px solid #10B981;
+    }
+    .m-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 0.5rem;
+    }
+    .m-card-desc {
+      font-size: 0.92rem;
+      color: #94A3B8;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .semester-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #93C5FD;
+      background: #132247;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      border: 1px solid #1E325C;
+    }
+    .btn-action {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 0.95rem;
+    }
+    .btn-gold-action {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #070D1E;
+    }
+    .btn-gold-action:hover {
+      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+    }
+    .btn-blue-action {
+      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+      color: #FFFFFF;
+    }
+    .btn-blue-action:hover {
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+    }
+
+    /* Course Player / Security View */
+    .player-section {
+      background: #0F1A36;
+      border: 1px solid #1E325C;
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 3.5rem;
+    }
+    .video-mock {
+      background: #000000;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      max-height: 480px;
+      margin-bottom: 1.5rem;
+      border: 1px solid #233B6E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-mock video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sec-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(7, 13, 30, 0.85);
+      border: 1px solid #F59E0B;
+      color: #FDE68A;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 10;
+    }
+
+    /* Interactive Quiz Section */
+    .quiz-box {
+      background: #132247;
+      border: 1px solid #1E325C;
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-top: 1.5rem;
+    }
+    .quiz-q {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 1rem;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-opt {
+      background: #0F1A36;
+      border: 1px solid #1E325C;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-opt:hover {
+      border-color: #3B82F6;
+      background: #182C5B;
+    }
+    .quiz-opt.selected {
+      border-color: #F59E0B;
+      background: rgba(245, 158, 11, 0.12);
+      color: #FDE68A;
+    }
+    .quiz-result {
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+    }
+
+    /* Creator Studio Modal / 10 GB Upload */
+    .creator-studio-panel {
+      background: #0F1A36;
+      border: 1px solid #2563EB;
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      display: none;
+    }
+    .dropzone {
+      border: 2px dashed #2563EB;
+      border-radius: 10px;
+      padding: 2.5rem;
+      text-align: center;
+      background: rgba(37, 99, 235, 0.05);
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #1E325C;
+      background: #0A1128;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #64748B;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="midad-nav">
+    <a href="#" class="brand-group">
+      <img src="/static/midad_brand_logo.svg" alt="Midad Logo" class="brand-logo-img">
+      <div class="brand-title-wrap">
+        <span class="brand-title-en">MIDAD</span>
+        <span class="brand-title-ar">مِـــــداد الطبية</span>
+      </div>
+    </a>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <a href="#courses" style="color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 0.95rem;">Modules</a>
+      <a href="#player" style="color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 0.95rem;">Lecture Player</a>
+      <button class="btn-action btn-blue-action" style="padding: 6px 16px; width: auto;" onclick="alert('Google Sign-In integration configured via Social Login Key.')">Sign In with Google</button>
+    </div>
+  </header>
+
+  <!-- Role Demonstration Toolbar -->
+  <div class="role-bar">
+    <div class="role-toggle-group">
+      <span style="color: #94A3B8; font-weight: 600;">Active Role Simulation:</span>
+      <button class="role-chip active" id="role-student" onclick="setRole('student')">👨‍🎓 Student / Learner</button>
+      <button class="role-chip" id="role-creator" onclick="setRole('creator')">👨‍🏫 Course Creator (Restricted)</button>
+      <button class="role-chip owner" id="role-owner" onclick="setRole('owner')">👑 Owner / Administrator</button>
+    </div>
+    <div id="role-desc" style="color: #FDE68A; font-weight: 500;">
+      Viewing as Student: Can browse, enroll in medical modules, stream lectures.
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Hero Section -->
+    <div class="hero-box">
+      <div class="hero-content">
+        <h1>Midad <span>Medical LMS</span></h1>
+        <p>A specialized, high-yield digital learning platform built for medical students and healthcare professionals. Featuring protected 4K video lectures, interactive histology quizzes, and semester-based enrollment.</p>
+        <div class="hero-badges">
+          <span class="badge badge-gold">🛡️ Protected Content (Anti-Piracy)</span>
+          <span class="badge badge-blue">📁 10 GB Video Upload Capacity</span>
+          <span class="badge badge-gold">⏱️ 6-Month Semester Validity</span>
+          <span class="badge badge-blue">⚡ Built on Frappe Architecture</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Creator Studio Panel (Shows when role is creator or owner) -->
+    <div class="creator-studio-panel" id="creator-panel">
+      <h2 style="color: #FFFFFF; font-size: 1.4rem; margin-bottom: 0.5rem;">👨‍🏫 Course Creator Studio (Restricted View)</h2>
+      <p style="color: #94A3B8; font-size: 0.9rem; margin-bottom: 1.5rem;">
+        As a Course Creator, you have permissions to build courses, write lessons, and upload up to 10 GB per video. <strong style="color: #F59E0B;">Notice: System settings, website customization, and billing keys are hidden and blocked.</strong>
+      </p>
+
+      <div style="background: #132247; padding: 1.25rem; border-radius: 10px; border: 1px solid #1E325C;">
+        <h4 style="color: #FFFFFF; margin-bottom: 0.5rem;">Upload Medical Lecture (Up to 10 GB per file)</h4>
+        <div class="dropzone" onclick="document.getElementById('demo-file').click()">
+          <input type="file" id="demo-file" style="display:none;" onchange="handleFileUpload(this)">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎥</div>
+          <div style="font-weight: 700; color: #FFFFFF;">Click or Drag & Drop 4K Medical Video / PDF</div>
+          <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 4px;">Nginx buffer-free streaming configured for 10 GB payloads</div>
+        </div>
+        <div id="upload-status" style="margin-top: 1rem; color: #6EE7B7; font-weight: 600; display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Medical Courses Section -->
+    <div id="courses">
+      <h2 class="section-title">Academic Medical Modules (Semesters 2026/2027)</h2>
+      
+      <div class="courses-grid">
+
+        <!-- Course 1: Anatomy & Histology -->
+        <div class="m-card">
+          <div>
+            <div class="m-card-header">
+              <div class="m-card-icon">🦴</div>
+              <span class="m-card-price price-paid">300 EGP</span>
+            </div>
+            <div class="semester-tag">⏱️ 6 Months Semester Access (180 Days)</div>
+            <h3 class="m-card-title">Anatomy and Histology Module</h3>
+            <p class="m-card-desc">Comprehensive gross anatomy of limbs and viscera coupled with microscopic histology of epithelial, connective, and muscular tissues.</p>
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 1rem;">
+              • 24 High-Yield Lectures<br>
+              • 3 Histology Practical Quizzes<br>
+              • Downloadable PDF Clinical Notes
+            </div>
+            <button class="btn-action btn-gold-action" onclick="loadCourse('anatomy')">Start Learning / Enroll (300 EGP)</button>
+          </div>
+        </div>
+
+        <!-- Course 2: General Physiology -->
+        <div class="m-card">
+          <div>
+            <div class="m-card-header">
+              <div class="m-card-icon">⚡</div>
+              <span class="m-card-price price-paid">250 EGP</span>
+            </div>
+            <div class="semester-tag">⏱️ 6 Months Semester Access (180 Days)</div>
+            <h3 class="m-card-title">General Physiology Module</h3>
+            <p class="m-card-desc">Cell membrane biophysics, resting membrane potentials, action potential generation, synaptic transmission, and autonomic nervous system regulation.</p>
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 1rem;">
+              • 18 Dynamic Biophysics Lectures<br>
+              • Electrophysiology Quizzes<br>
+              • Full PDF Lecture Outlines
+            </div>
+            <button class="btn-action btn-gold-action" onclick="loadCourse('physiology')">Start Learning / Enroll (250 EGP)</button>
+          </div>
+        </div>
+
+        <!-- Course 3: Microbiology -->
+        <div class="m-card" style="border-color: rgba(16, 185, 129, 0.4);">
+          <div>
+            <div class="m-card-header">
+              <div class="m-card-icon">🔬</div>
+              <span class="m-card-price price-free">Free Foundation</span>
+            </div>
+            <div class="semester-tag">⏱️ 6 Months Access Included</div>
+            <h3 class="m-card-title">Microbiology Module</h3>
+            <p class="m-card-desc">Fundamental bacteriology, Gram-staining differentiation, bacterial cell wall architecture, and modern antibiotic pharmacology mechanisms.</p>
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 1rem;">
+              • 12 Interactive Modules<br>
+              • Bacterial Morphology Atlas<br>
+              • Free Verifiable Certificate
+            </div>
+            <button class="btn-action btn-blue-action" onclick="loadCourse('microbiology')">Instant Free Access (0 EGP)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Active Lecture & Security Player Section -->
+    <div id="player" class="player-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <span style="color: #F59E0B; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">Protected Lecture Player</span>
+          <h2 id="active-lesson-title" style="color: #FFFFFF; font-size: 1.4rem;">Lesson 1.1: Anatomical Planes & Directional Terminology</h2>
+        </div>
+        <a id="active-pdf-link" href="/static/Anatomy_Histology_Notes.pdf" target="_blank" class="btn-action btn-blue-action" style="width: auto; padding: 6px 14px; text-decoration: none; font-size: 0.85rem;">📄 Download Lecture Notes (PDF)</a>
+      </div>
+
+      <!-- Protected Video Canvas -->
+      <div class="video-mock" id="player-container">
+        <span class="sec-badge">🔒 DRM & Watermark Active (Right-Click Disabled)</span>
+        <video id="lecture-video" controls controlsList="nodownload" disablePictureInPicture>
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+
+      <!-- Interactive Medical Assessment -->
+      <div class="quiz-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="color: #93C5FD; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Medical Evaluation & Instant Auto-Grading</span>
+          <span style="color: #FDE68A; font-size: 0.8rem; font-weight: 600;">Passing Grade: 70%</span>
+        </div>
+        <div class="quiz-q" id="active-quiz-question">Which cell junction anchors intermediate filaments across adjacent epithelial cells to provide tensile integrity?</div>
+        
+        <div class="quiz-options" id="active-quiz-options">
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">A) Tight Junction (Zonula Occludens)</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, true)">B) Desmosome (Macula Adherens) [Correct]</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">C) Gap Junction (Nexus)</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">D) Hemidesmosome</div>
+        </div>
+
+        <button class="btn-action btn-gold-action" style="width: auto; padding: 8px 22px;" onclick="submitQuiz()">Submit Answer & Auto-Grade</button>
+        <div class="quiz-result" id="quiz-result"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Midad Medical LMS (مِداد الطبية). All course content is protected by medical copyright. Powered by Frappe Architecture.</p>
+  </footer>
+
+  <!-- Include Content Security Script -->
+  <script src="/static/content_security.js"></script>
+
+  <script>
+    let selectedOptionCorrect = null;
+
+    function selectQuizOption(el, isCorrect) {
+      document.querySelectorAll('.quiz-opt').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedOptionCorrect = isCorrect;
+    }
+
+    function submitQuiz() {
+      const res = document.getElementById('quiz-result');
+      if (selectedOptionCorrect === null) {
+        alert('Please select an option first.');
+        return;
+      }
+      res.style.display = 'block';
+      if (selectedOptionCorrect) {
+        res.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+        res.style.color = '#6EE7B7';
+        res.style.border = '1px solid #10B981';
+        res.innerHTML = '✅ <strong>Correct! (Score: 100%)</strong> - Desmosomes anchor intermediate keratin filaments between epithelial cells, dissipating mechanical stress.';
+      } else {
+        res.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+        res.style.color = '#FCA5A5';
+        res.style.border = '1px solid #EF4444';
+        res.innerHTML = '❌ <strong>Incorrect.</strong> The correct answer is <em>Desmosome (Macula Adherens)</em>.';
+      }
+    }
+
+    function setRole(role) {
+      document.querySelectorAll('.role-chip').forEach(c => c.classList.remove('active'));
+      document.getElementById('role-' + role).classList.add('active');
+      const desc = document.getElementById('role-desc');
+      const panel = document.getElementById('creator-panel');
+
+      if (role === 'student') {
+        desc.innerText = 'Viewing as Student: Can browse, enroll in medical modules, stream lectures.';
+        panel.style.display = 'none';
+      } else if (role === 'creator') {
+        desc.innerText = 'Viewing as Course Creator: Can create courses & upload up to 10 GB. System settings and website editing are hidden.';
+        panel.style.display = 'block';
+      } else if (role === 'owner') {
+        desc.innerText = 'Viewing as Owner / Administrator: Full unrestricted control over system, website, and payment accounts.';
+        panel.style.display = 'block';
+      }
+    }
+
+    function handleFileUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const status = document.getElementById('upload-status');
+        status.style.display = 'block';
+        status.innerText = `[+] File selected: "${file.name}" (${(file.size / (1024*1024)).toFixed(2)} MB). 10 GB chunked streaming buffer ready!`;
+      }
+    }
+
+    function loadCourse(courseKey) {
+      const title = document.getElementById('active-lesson-title');
+      const pdf = document.getElementById('active-pdf-link');
+      const q = document.getElementById('active-quiz-question');
+      const opt = document.getElementById('active-quiz-options');
+      const res = document.getElementById('quiz-result');
+      res.style.display = 'none';
+      selectedOptionCorrect = null;
+
+      if (courseKey === 'anatomy') {
+        title.innerText = 'Anatomy & Histology • Lesson 1.1: Anatomical Planes & Directional Terminology';
+        pdf.href = '/static/Anatomy_Histology_Notes.pdf';
+        q.innerText = 'Which cell junction anchors intermediate filaments across adjacent epithelial cells to provide tensile integrity?';
+        opt.innerHTML = `
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">A) Tight Junction (Zonula Occludens)</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, true)">B) Desmosome (Macula Adherens) [Correct]</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">C) Gap Junction (Nexus)</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">D) Hemidesmosome</div>
+        `;
+      } else if (courseKey === 'physiology') {
+        title.innerText = 'General Physiology • Lesson 2.1: Genesis of Resting Membrane Potential & Channel Gating';
+        pdf.href = '/static/Physiology_Notes.pdf';
+        q.innerText = 'What accounts primarily for the negative resting membrane potential of mammalian nerve cells (-70 mV)?';
+        opt.innerHTML = `
+          <div class="quiz-opt" onclick="selectQuizOption(this, true)">A) High resting permeability to K+ via leak channels [Correct]</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">B) Active influx of chloride ions</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">C) Opening of voltage-gated sodium channels</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">D) Extracellular calcium accumulation</div>
+        `;
+      } else if (courseKey === 'microbiology') {
+        title.innerText = 'Microbiology (Free Foundation) • Lesson 1.1: Gram Staining & Peptidoglycan Cell Wall Morphology';
+        pdf.href = '/static/Microbiology_Notes.pdf';
+        q.innerText = 'Which endotoxin molecule is exclusively embedded within the outer membrane of Gram-negative bacteria?';
+        opt.innerHTML = `
+          <div class="quiz-opt" onclick="selectQuizOption(this, true)">A) Lipopolysaccharide (Lipid A) [Correct]</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">B) Lipoteichoic Acid</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">C) Ergosterol</div>
+          <div class="quiz-opt" onclick="selectQuizOption(this, false)">D) Thick Peptidoglycan Mesh</div>
+        `;
+      }
+
+      document.getElementById('player').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
