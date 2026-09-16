@@ -53,8 +53,9 @@ echo "[5/6] Installing apps onto $SITE..."
 bench --site "$SITE" install-app payments
 bench --site "$SITE" install-app lms
 bench --site "$SITE" set-config developer_mode 1
-# Configure 10 GB Upload Limit for Medical Video Lectures
+# Configure 10 GB Upload Limit & Extended Timeout for Large Video Lectures
 bench --site "$SITE" set-config max_file_size 10737418240
+bench --site "$SITE" set-config http_timeout 1800
 bench --site "$SITE" clear-cache
 bench use "$SITE"
 

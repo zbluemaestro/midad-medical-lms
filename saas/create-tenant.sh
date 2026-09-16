@@ -48,8 +48,10 @@ if [ -n "$CUSTOM_DOMAIN" ]; then
     bench --site "$TENANT_SITE" set-config custom_domain "$CUSTOM_DOMAIN"
 fi
 
-# 4. Seed initial setup
-echo "[4/4] Finalizing tenant optimization..."
+# 4. Seed initial setup & configure large video upload limit (10 GB)
+echo "[4/4] Finalizing tenant optimization & upload thresholds..."
+bench --site "$TENANT_SITE" set-config max_file_size 10737418240
+bench --site "$TENANT_SITE" set-config http_timeout 1800
 bench --site "$TENANT_SITE" clear-cache
 
 # Summary output
