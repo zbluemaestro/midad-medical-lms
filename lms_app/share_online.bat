@@ -19,10 +19,11 @@ if exist "%CLOUDFLARED_EXE%" (
     goto end
 )
 
-echo [*] Launching instant secure tunnel via SSH...
-echo [*] When the public HTTPS URL appears below, copy and send it to other admins!
+:loop
+echo [*] Launching secure tunnel via SSH...
+echo [*] Copy the public HTTPS URL (e.g. https://xxx.lhr.life) below and send it to other admins!
 echo ==================================================================
-ssh -R 80:127.0.0.1:8080 -o StrictHostKeyChecking=no -o ServerAliveInterval=60 nokey@localhost.run
-
-:end
-pause
+ssh -R 80:127.0.0.1:8080 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 nokey@localhost.run
+echo [!] Connection dropped or interrupted. Automatically reconnecting in 3 seconds...
+timeout /t 3 /nobreak >nul
+goto loop
