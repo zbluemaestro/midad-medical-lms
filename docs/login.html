@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Midad Academy LMS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        darkbg: '#0b1120',
+                        darkcard: '#151f32',
+                        darkborder: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0b1120; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+        .glass-card { background: rgba(21, 31, 50, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+    
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand / Logo -->
+                <a href="./index.html" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-[#0A1128] border border-amber-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition overflow-hidden">
+                        <img src="./static/images/midad_logo.svg" alt="Midad Academy LMS Logo" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-white block">Midad Academy LMS</span>
+                        <span class="text-xs text-amber-400 font-medium hidden sm:block">Modern High-Performance Learning Platform</span>
+                    </div>
+                </a>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="./index.html" class="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-compass text-slate-400"></i> Browse Courses
+                    </a>
+
+                    
+                </nav>
+
+                <!-- Auth / User Corner -->
+                <div class="flex items-center space-x-3">
+                    
+                        <a href="./login.html" class="text-sm font-medium text-slate-300 hover:text-white transition px-3 py-2">
+                            Sign In
+                        </a>
+                        <a href="./register.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg shadow-lg shadow-blue-500/30 transition">
+                            Get Started
+                        </a>
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full">
+        
+            
+        
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+<div class="min-h-[75vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+    <div class="w-full max-w-md space-y-8 glass-card p-8 sm:p-10 rounded-3xl shadow-2xl border border-slate-700/60">
+        <div class="text-center">
+            <div class="w-12 h-12 rounded-2xl bg-blue-600 mx-auto flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30 mb-4">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">Sign In to Your Account</h2>
+            <p class="text-sm text-slate-400 mt-2">Access your enrolled courses or creator studio.</p>
+        </div>
+
+        <!-- Master Super Admin Credentials Hint -->
+        <div class="p-3.5 rounded-xl bg-blue-950/40 border border-blue-800/40 text-xs text-blue-300 flex items-start space-x-3">
+            <i class="fa-solid fa-key mt-0.5 text-blue-400"></i>
+            <div>
+                <span class="font-semibold block text-blue-200">Master Super Admin Credentials:</span>
+                Email: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">admin@lms.local</code><br>
+                Password: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">AdminPass2026!</code>
+            </div>
+        </div>
+
+        <form class="mt-8 space-y-5" method="POST" action="/login">
+            <div>
+                <label for="email" class="block text-sm font-medium text-slate-300">Email Address</label>
+                <div class="mt-1.5 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                           placeholder="you@example.com">
+                </div>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-300">Password</label>
+                <div class="mt-1.5 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                           placeholder="••••••••">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center pt-2">
+            <p class="text-xs text-slate-400">
+                Don't have an account?
+                <a href="./register.html" class="font-semibold text-blue-400 hover:text-blue-300">Register as Student</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-slate-800 bg-[#090e1a] py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500 gap-4">
+            <p>© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
+            <div class="flex items-center space-x-6">
+                <span>Self-Hosted & Independent</span>
+                <span>•</span>
+                <span>Unrestricted Media Storage</span>
+            </div>
+        </div>
+    </footer>
+
+    
+</body>
+</html>
