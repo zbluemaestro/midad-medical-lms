@@ -1,9 +1,9 @@
 @echo off
-title Pulse Academy LMS Server
+title Midad Academy LMS Server
 cd /d "%~dp0"
 
 echo ==================================================================
-echo               PULSE ACADEMY LMS - LOCAL LAUNCHER
+echo               MIDAD ACADEMY LMS - LOCAL LAUNCHER
 echo ==================================================================
 echo [*] Starting Python Flask LMS Server...
 echo [*] URL: http://localhost:8080

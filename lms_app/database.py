@@ -127,18 +127,18 @@ def init_db():
 
     # Initialize Default Settings
     default_settings = {
-        "site_name": "Pulse Academy LMS",
-        "tagline": "Modern High-Performance Online Learning & Skills Platform",
+        "site_name": "Midad Academy LMS",
+        "tagline": "أكاديمية مداد التعليمية • Modern High-Performance Learning Platform",
         "hero_badge": "Next-Generation Learning",
         "hero_heading": "Build Skills, Build Courses, Lead the Future",
         "hero_subheading": "An independent, unrestricted learning management platform featuring video courses, interactive exams, and certified progression.",
         "primary_color": "#2563eb",
         "accent_color": "#3b82f6",
-        "footer_text": "© 2026 Pulse Academy. All rights reserved. Self-Hosted & Unrestricted."
+        "footer_text": "© 2026 Midad Academy LMS. All rights reserved. Self-Hosted & Unrestricted."
     }
 
     for k, v in default_settings.items():
-        cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)", (k, v))
+        cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (k, v))
 
     # Initialize Master Super Admin User if not exists
     cursor.execute("SELECT id FROM users WHERE role = 'super_admin' LIMIT 1")

@@ -25,7 +25,7 @@ for d in [VIDEOS_DIR, PHOTOS_DIR, DOCS_DIR]:
     os.makedirs(d, exist_ok=True)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "lms-pulse-super-secret-key-2026")
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "lms-midad-academy-super-secret-key-2026")
 
 # Unrestricted Upload Limit (None = unlimited body size)
 app.config["MAX_CONTENT_LENGTH"] = None
@@ -855,7 +855,7 @@ def stream_media(folder, filename):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     print("==================================================================")
-    print(f" Pulse Academy LMS Platform Active!")
+    print(f" Midad Academy LMS Platform Active!")
     print(f" URL: http://localhost:{port}")
     print(f" Master Super Admin: admin@lms.local (Password: AdminPass2026!)")
     print("==================================================================")
