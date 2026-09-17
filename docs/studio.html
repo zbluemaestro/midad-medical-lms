@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Studio - Midad Academy LMS</title>
+    <title>Midad Academy LMS - Creator Studio & Admin</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -24,100 +24,796 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background-color: #0b1120; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-        .glass-card { background: rgba(21, 31, 50, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(21, 31, 50, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .light-panel { background: #ffffff; color: #1e293b; }
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch-toggle input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1; transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #0f172a; }
+        input:checked + .slider:before { transform: translateX(20px); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b1120; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased">
-    <!-- Navbar -->
+<body class="min-h-screen flex flex-col antialiased bg-[#0b1120] text-slate-100">
+
+    <!-- Top Sticky Header -->
     <header class="sticky top-0 z-50 glass-card border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Brand / Logo -->
-                <a href="./index.html" class="flex items-center space-x-3 group">
-                    <div class="w-11 h-11 rounded-xl bg-[#0A1128] border border-amber-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition overflow-hidden">
-                        <img src="./static/images/midad_logo.svg" alt="Midad Academy LMS Logo" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <span class="text-xl font-bold tracking-tight text-white block">Midad Academy LMS</span>
-                        <span class="text-xs text-amber-400 font-medium hidden sm:block">Modern High-Performance Learning Platform</span>
-                    </div>
-                </a>
+                
+                <!-- Left: Sidebar Toggle & Brand -->
+                <div class="flex items-center space-x-3">
+                    <button id="sidebar-toggle-btn" onclick="toggleSidebar()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center justify-center cursor-pointer border border-slate-700/60" title="Toggle Sidebar (Show/Hide)">
+                        <i class="fa-solid fa-bars-staggered text-base"></i>
+                    </button>
 
-                <!-- Navigation Links -->
-                <nav class="hidden md:flex items-center space-x-6">
-                    <a href="./index.html" class="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-compass text-slate-400"></i> Browse Courses
+                    <a href="./index.html" class="flex items-center space-x-3 group">
+                        <div class="w-10 h-10 rounded-xl bg-[#0A1128] border border-amber-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition overflow-hidden">
+                            <img id="header-brand-logo" src="./static/images/midad_logo.svg" alt="Midad Academy Logo" class="w-full h-full object-contain">
+                        </div>
+                        <div>
+                            <span id="header-brand-name" class="text-lg font-bold tracking-tight text-white block leading-tight">Midad Academy LMS</span>
+                            <span class="text-[11px] text-amber-400 font-medium hidden sm:block">Modern High-Performance Learning</span>
+                        </div>
                     </a>
-                    <a href="./studio.html" class="text-sm font-semibold text-emerald-400 bg-emerald-950/50 px-3.5 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-1.5">
-                        <i class="fa-solid fa-pen-ruler"></i> Creator Studio
-                    </a>
+                </div>
+
+                <!-- Center Nav Views -->
+                <nav class="hidden md:flex items-center space-x-2">
+                    <button onclick="switchView('courses')" id="nav-btn-courses" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-open"></i> Courses Studio
+                    </button>
+                    <button onclick="switchView('dashboard')" id="nav-btn-dashboard" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard & Quizzes
+                    </button>
+                    <button onclick="switchView('profile')" id="nav-btn-profile" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-user"></i> My Profile
+                    </button>
+                    <button onclick="switchView('settings')" id="nav-btn-settings" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-gear"></i> Admin Settings
+                    </button>
                 </nav>
 
-                <!-- Auth / User Corner -->
+                <!-- Right Corner User Header -->
                 <div class="flex items-center space-x-3">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-950/60 border border-amber-600/40 text-amber-300">
-                            <i class="fa-solid fa-shield-halved mr-1"></i> <span id="user-display-name">Master Administrator</span>
-                        </span>
-                        <button onclick="handleLogout()" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2.5 py-1.5 rounded-lg border border-rose-900/40 bg-rose-950/30 transition flex items-center gap-1" title="Sign Out">
-                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-800/80 transition text-sm" title="Toggle Theme">
+                        <i class="fa-solid fa-sun" id="theme-icon"></i>
+                    </button>
+
+                    <div class="relative">
+                        <button onclick="toggleUserDropdown()" class="flex items-center space-x-2.5 p-1.5 rounded-xl hover:bg-slate-800/80 transition border border-transparent hover:border-slate-700/60 cursor-pointer">
+                            <img id="nav-avatar" src="./static/images/omar_avatar.png" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-amber-500/50">
+                            <span id="nav-user-name" class="text-xs font-semibold text-white hidden sm:block">Omar Duhaim</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                         </button>
+
+                        <!-- Header Dropdown Menu (Matching Image 1) -->
+                        <div id="header-user-dropdown" class="hidden absolute right-0 mt-2 w-52 glass-card rounded-2xl border border-slate-700/80 shadow-2xl py-2 z-50">
+                            <div class="px-4 py-2 border-b border-slate-800">
+                                <span class="text-xs font-bold text-white block" id="dropdown-user-name">Omar Duhaim</span>
+                                <span class="text-[11px] text-emerald-400 font-medium">Master Super Admin</span>
+                            </div>
+                            <button onclick="switchView('profile'); toggleUserDropdown()" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5">
+                                <i class="fa-regular fa-user text-slate-400 w-4"></i> My Profile
+                            </button>
+                            <button onclick="toggleTheme(); toggleUserDropdown()" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5">
+                                <i class="fa-solid fa-sun text-slate-400 w-4"></i> Toggle Theme
+                            </button>
+                            <button onclick="switchView('settings'); toggleUserDropdown()" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5">
+                                <i class="fa-solid fa-gear text-slate-400 w-4"></i> Settings
+                            </button>
+                            <div class="my-1 border-t border-slate-800"></div>
+                            <button onclick="handleLogout()" class="w-full text-left px-4 py-2.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 flex items-center gap-2.5">
+                                <i class="fa-solid fa-right-from-bracket text-rose-400 w-4"></i> Sign Out
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-800 gap-4">
-                <div>
-                    <div class="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">
-                        <i class="fa-solid fa-pen-ruler"></i>
-                        <span>Admin & Creator Studio</span>
+    <!-- Main Container with Collapsible Sidebar -->
+    <div class="flex-grow flex w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 gap-6 relative">
+        
+        <!-- SIDEBAR (Matching Image 1) -->
+        <aside id="app-sidebar" class="w-64 flex-shrink-0 transition-all duration-300 ease-in-out">
+            <div class="sticky top-24 space-y-4">
+                
+                <!-- Sidebar Header Card (Verbatim Image 1) -->
+                <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleSidebarDropdown()">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-lg shadow-md shadow-emerald-500/20">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-bold text-white block leading-tight">Learning</span>
+                                <span class="text-xs text-slate-400 block" id="sidebar-user-name">Omar Duhaim</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition" id="sidebar-caret"></i>
                     </div>
-                    <h1 class="text-3xl font-bold text-white tracking-tight">Course Management Dashboard</h1>
-                    <p class="text-sm text-slate-400 mt-1">Create courses, upload lecture videos, design interactive quizzes, and publish to students.</p>
+
+                    <!-- Dropdown inside card (Matching Image 1) -->
+                    <div id="sidebar-learning-dropdown" class="mt-3 pt-3 border-t border-slate-800/80 space-y-1">
+                        <button onclick="switchView('profile')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
+                            <i class="fa-regular fa-user text-slate-400 w-4"></i> My Profile
+                        </button>
+                        <button onclick="toggleTheme()" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
+                            <i class="fa-solid fa-sun text-slate-400 w-4"></i> Toggle Theme
+                        </button>
+                        <button onclick="alert('Connected applications: LMS Engine, Quiz Proctor, Certificate Registry.')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center justify-between">
+                            <span class="flex items-center gap-2.5"><i class="fa-solid fa-table-cells-large text-slate-400 w-4"></i> Apps</span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
+                        </button>
+                        <button onclick="switchView('settings')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
+                            <i class="fa-solid fa-gear text-slate-400 w-4"></i> Settings
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <button onclick="openCourseModal()" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold shadow-lg shadow-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-plus"></i> Create New Course
+
+                <!-- Navigation Links List -->
+                <nav class="space-y-1.5 text-xs font-medium">
+                    <button onclick="switchView('courses')" id="side-link-courses" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-3">
+                        <i class="fa-solid fa-graduation-cap w-4 text-emerald-400"></i>
+                        <span>Courses Studio</span>
+                    </button>
+                    <button onclick="switchView('dashboard')" id="side-link-dashboard" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-chart-pie w-4 text-blue-400"></i>
+                        <span>Dashboard & Quizzes</span>
+                    </button>
+                    <button onclick="switchView('profile')" id="side-link-profile" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-id-badge w-4 text-purple-400"></i>
+                        <span>My Profile & Slots</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('branding')" id="side-link-branding" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-palette w-4 text-amber-400"></i>
+                        <span>Brand Settings (White)</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('general')" id="side-link-general" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-sliders w-4 text-rose-400"></i>
+                        <span>General Config (White)</span>
+                    </button>
+                    <a href="./index.html" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition flex items-center gap-3">
+                        <i class="fa-solid fa-globe w-4 text-slate-400"></i>
+                        <span>View Public Site</span>
+                    </a>
+                </nav>
+
+                <!-- Logout Card -->
+                <div class="pt-4 border-t border-slate-800">
+                    <button onclick="handleLogout()" class="w-full py-2.5 px-3.5 rounded-xl bg-rose-950/30 border border-rose-900/40 text-rose-400 hover:text-rose-200 hover:bg-rose-900/50 text-xs font-semibold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
                     </button>
                 </div>
             </div>
+        </aside>
 
-            <!-- Notice Banner -->
-            <div class="mt-6 p-4 rounded-2xl bg-blue-950/30 border border-blue-800/40 flex items-start space-x-3 text-sm text-blue-200">
-                <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 text-lg"></i>
-                <div>
-                    <span class="font-bold text-white">Full Admin Access Active</span>
-                    <p class="text-xs text-blue-300/80 mt-0.5">You are signed in as Master Administrator. Any course created here will immediately appear in your course catalog. Direct video uploads and auto-graded quizzes are fully enabled.</p>
-                </div>
-            </div>
+        <!-- MAIN DYNAMIC CONTENT AREA -->
+        <main class="flex-grow w-full min-w-0">
 
-            <!-- Courses Table -->
-            <div class="mt-8 glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="bg-slate-900/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="px-6 py-4">Course</th>
-                                <th class="px-6 py-4">Category</th>
-                                <th class="px-6 py-4">Lectures</th>
-                                <th class="px-6 py-4">Students</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="course-table-body" class="divide-y divide-slate-800/60">
-                            <!-- Populated dynamically via JS -->
-                        </tbody>
-                    </table>
+            <!-- VIEW 1: COURSES STUDIO -->
+            <section id="view-courses" class="space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+                            Hey, <span class="text-white font-bold" id="greeting-name">Omar Duhaim</span> 👋
+                        </h1>
+                        <p class="text-sm text-slate-400 mt-1">Manage your courses and batches at a glance</p>
+                    </div>
+                    <div>
+                        <button onclick="openCourseModal()" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold shadow-lg shadow-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i> Create New Course
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </main>
+
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white tracking-tight">Courses Created</h2>
+                    <span class="text-xs font-medium text-slate-400"><i class="fa-solid fa-database text-blue-400 mr-1"></i> Direct Video Uploads • 10 GB Cap</span>
+                </div>
+
+                <!-- Courses Table -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-900/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="px-6 py-4">Course</th>
+                                    <th class="px-6 py-4">Category</th>
+                                    <th class="px-6 py-4">Lectures</th>
+                                    <th class="px-6 py-4">Students</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="course-table-body" class="divide-y divide-slate-800/60">
+                                <!-- Populated dynamically via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: DASHBOARD & QUIZZES PROGRESS -->
+            <section id="view-dashboard" class="hidden space-y-6">
+                <div class="pb-6 border-b border-slate-800">
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Learning & Academic Progress</h1>
+                    <p class="text-sm text-slate-400 mt-1">Track course mastery, lecture quizzes between videos, and final comprehensive exams.</p>
+                </div>
+
+                <!-- Metric Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Enrolled Courses</span>
+                        <div class="text-2xl font-black text-white mt-1">3 Active</div>
+                        <span class="text-xs text-blue-400 mt-1 block"><i class="fa-solid fa-play mr-1"></i> 82% Avg. Progress</span>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Inter-Lecture Quizzes</span>
+                        <div class="text-2xl font-black text-emerald-400 mt-1">7 Completed</div>
+                        <span class="text-xs text-emerald-400/80 mt-1 block"><i class="fa-solid fa-check mr-1"></i> 95.8% Pass Rate</span>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Final Course Exams</span>
+                        <div class="text-2xl font-black text-purple-400 mt-1">2 Passed</div>
+                        <span class="text-xs text-purple-300 mt-1 block"><i class="fa-solid fa-award mr-1"></i> 1 Exam Ready</span>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Certificates Issued</span>
+                        <div class="text-2xl font-black text-amber-400 mt-1">2 Diplomas</div>
+                        <span class="text-xs text-amber-300 mt-1 block"><i class="fa-solid fa-certificate mr-1"></i> Verified on Chain</span>
+                    </div>
+                </div>
+
+                <!-- Course Progress Breakdown with Inter-Lecture Quizzes -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-emerald-400"></i> Course Syllabus & Exam Breakdown
+                    </h2>
+
+                    <!-- Course 1 -->
+                    <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Full-Stack AI Systems & Autonomous Agents</h3>
+                                <p class="text-xs text-slate-400">Instructor: Omar Duhaim • 4 Lectures, 3 Quizzes, 1 Final Exam</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">85% Complete</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2.5">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                        </div>
+
+                        <!-- Inter-Lecture Quizzes -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-bold text-white block">Lecture 1 Quiz: Neural Architecture</span>
+                                    <span class="text-[11px] text-slate-400">Tested directly after video 1</span>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-400 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/50">100% (10/10)</span>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-bold text-white block">Lecture 2 Quiz: LLMs & Attention</span>
+                                    <span class="text-[11px] text-slate-400">Tested directly after video 2</span>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-400 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/50">95% (19/20)</span>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-bold text-white block">Lecture 3 Quiz: Autonomous Workflows</span>
+                                    <span class="text-[11px] text-slate-400">Tested directly after video 3</span>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-400 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/50">88% (15/17)</span>
+                            </div>
+
+                            <!-- Final Course Exam Item -->
+                            <div class="p-3.5 rounded-xl bg-purple-950/30 border border-purple-800/50 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-bold text-purple-200 block"><i class="fa-solid fa-trophy mr-1 text-amber-400"></i> Final Comprehensive Exam</span>
+                                    <span class="text-[11px] text-purple-300/80">50 Questions • 80% passing grade required</span>
+                                </div>
+                                <button onclick="alert('Exam Status: Completed with 96%! Official Verified Certificate Issued.')" class="text-xs font-bold text-white bg-purple-600 hover:bg-purple-500 px-3 py-1.5 rounded-lg shadow-md transition">
+                                    Passed (96%)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 2 -->
+                    <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Anatomy & Histology: Comprehensive Medical Module</h3>
+                                <p class="text-xs text-slate-400">Instructor: Prof. Tariq Al-Mansoor • 4 Lectures, 4 Quizzes, 1 Final Exam</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">100% Graduated</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2.5">
+                            <div class="bg-emerald-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-award text-amber-400 text-2xl"></i>
+                                <div>
+                                    <span class="text-xs font-bold text-white block">Medical Diploma Certificate Issued</span>
+                                    <span class="text-[11px] text-amber-300/80">Final Exam Score: 98% • Credential ID: MIDAD-MED-2026-9812</span>
+                                </div>
+                            </div>
+                            <button onclick="alert('Downloading verified diploma for Anatomy & Histology...')" class="text-xs font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded-lg shadow-md transition">
+                                <i class="fa-solid fa-download mr-1"></i> Diploma
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: MY PROFILE & AVAILABILITY SLOTS (Verbatim Image 2) -->
+            <section id="view-profile" class="hidden space-y-6">
+                
+                <!-- Profile Header Card (Verbatim Image 2) -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-2xl">
+                    <div class="flex items-center space-x-5">
+                        <div class="relative group">
+                            <img id="profile-avatar-img" src="./static/images/omar_avatar.png" alt="Omar Duhaim" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-amber-500/60 shadow-xl shadow-amber-500/20">
+                            <label for="avatar-file-input" class="absolute bottom-0 right-0 p-1.5 rounded-full bg-slate-900 border border-amber-500 text-amber-400 hover:text-white cursor-pointer transition text-xs shadow-lg" title="Change Avatar">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+                            <input type="file" id="avatar-file-input" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
+                        </div>
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight" id="profile-name">Omar Duhaim</h1>
+                            <p class="text-xs text-amber-400 font-medium mt-0.5">Master Super Administrator & Educational Director</p>
+                            <span class="text-xs text-slate-400 mt-1 block"><i class="fa-solid fa-location-dot text-slate-500 mr-1"></i> Africa/Cairo (GMT+3:00)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button onclick="openEditProfileModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer shadow-md">
+                            <i class="fa-solid fa-pen text-slate-400"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs (Verbatim Image 2) -->
+                <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 text-xs font-medium">
+                    <button onclick="switchProfileTab('about')" id="ptab-btn-about" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        About
+                    </button>
+                    <button onclick="switchProfileTab('certificates')" id="ptab-btn-certificates" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        Certificates
+                    </button>
+                    <button onclick="switchProfileTab('roles')" id="ptab-btn-roles" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        Roles
+                    </button>
+                    <button onclick="switchProfileTab('slots')" id="ptab-btn-slots" class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white font-semibold border border-slate-700 transition">
+                        Slots
+                    </button>
+                    <button onclick="switchProfileTab('schedule')" id="ptab-btn-schedule" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        Schedule
+                    </button>
+                </div>
+
+                <!-- TAB CONTENT: SLOTS (Verbatim Image 2) -->
+                <div id="ptab-content-slots" class="space-y-8 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl">
+                    
+                    <!-- Section: My availability -->
+                    <div>
+                        <h2 class="text-base font-bold text-white tracking-tight">My availability</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Times are in Africa/Cairo (GMT+3:00)</p>
+
+                        <!-- Availability Table -->
+                        <div class="mt-4 overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300">
+                                <thead class="text-slate-400 border-b border-slate-800">
+                                    <tr>
+                                        <th class="pb-3 font-semibold w-1/3">Day</th>
+                                        <th class="pb-3 font-semibold w-1/3">Start Time</th>
+                                        <th class="pb-3 font-semibold w-1/3">End Time</th>
+                                        <th class="pb-3 text-right"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="slots-table-body" class="divide-y divide-slate-800/60">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4">
+                            <button onclick="addAvailabilitySlotPrompt()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-plus text-xs"></i> Add Slot
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section: I am unavailable -->
+                    <div class="pt-6 border-t border-slate-800">
+                        <h2 class="text-base font-bold text-white tracking-tight">I am unavailable</h2>
+                        <div class="mt-3 flex flex-wrap items-center gap-4">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">From</label>
+                                <input type="date" id="unavail-from" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">To</label>
+                                <input type="date" id="unavail-to" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="self-end">
+                                <button onclick="saveUnavailability()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-medium border border-slate-700 transition cursor-pointer">
+                                    Save Range
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: My calendar -->
+                    <div class="pt-6 border-t border-slate-800">
+                        <h2 class="text-base font-bold text-white tracking-tight">My calendar</h2>
+                        <div class="mt-3">
+                            <button id="google-cal-btn" onclick="toggleGoogleCalendar()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer">
+                                <i class="fa-brands fa-google text-blue-400"></i>
+                                <span id="google-cal-text">Authorize Google Calendar Access</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: CERTIFICATES -->
+                <div id="ptab-content-certificates" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-4">
+                    <h2 class="text-base font-bold text-white tracking-tight">Earned & Verified Certifications</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-white block">Full-Stack AI Systems Diploma</span>
+                                <span class="text-[11px] text-emerald-400 font-medium">Grade: Distinction (96%)</span>
+                                <span class="text-[10px] text-slate-500 block mt-1">Issued: Sep 2026 • Verified Blockchain Hash</span>
+                            </div>
+                            <button onclick="alert('Downloading Certificate: Full-Stack AI Systems')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-white block">Anatomy & Histology Mastery Certificate</span>
+                                <span class="text-[11px] text-emerald-400 font-medium">Grade: High Distinction (98%)</span>
+                                <span class="text-[10px] text-slate-500 block mt-1">Issued: Sep 2026 • Accredited</span>
+                            </div>
+                            <button onclick="alert('Downloading Certificate: Anatomy & Histology')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: ABOUT -->
+                <div id="ptab-content-about" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-3 text-xs text-slate-300">
+                    <h2 class="text-base font-bold text-white tracking-tight">About Omar Duhaim</h2>
+                    <p class="leading-relaxed">Educational Director and Master Instructor specializing in high-performance learning architectures, healthcare sciences, and autonomous AI systems.</p>
+                    <div class="pt-3 border-t border-slate-800 space-y-1">
+                        <div><strong>Email:</strong> admin@lms.local</div>
+                        <div><strong>Role:</strong> Master Super Administrator</div>
+                        <div><strong>Institution:</strong> Midad Academy LMS</div>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: ROLES -->
+                <div id="ptab-content-roles" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-3">
+                    <h2 class="text-base font-bold text-white tracking-tight">Assigned Roles & Permissions</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Master Super Admin</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Course Creator</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Evaluator & Examiner</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">Batch Director</span>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: SCHEDULE -->
+                <div id="ptab-content-schedule" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-3 text-xs text-slate-300">
+                    <h2 class="text-base font-bold text-white tracking-tight">Active Academic Timetable</h2>
+                    <p>Live lectures, evaluation cohorts, and Q&A office hours automatically synchronized with Cairo time.</p>
+                </div>
+            </section>
+
+            <!-- VIEW 4: CREATOR STUDIO WHITE ADMIN PANELS (Verbatim Images 3 & 4) -->
+            <section id="view-settings" class="hidden">
+                
+                <!-- Pure Clean White Panel as in User Screenshots -->
+                <div class="light-panel rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row min-h-[700px]">
+                    
+                    <!-- Left Sidebar Menu (Matching Images 3 & 4) -->
+                    <div class="w-full md:w-64 bg-[#fbfbfb] border-r border-slate-200 p-5 space-y-6 flex-shrink-0 text-xs text-slate-600">
+                        
+                        <!-- Configuration Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Configuration</span>
+                            <div class="space-y-1">
+                                <button onclick="switchSettingsTab('general')" id="stab-btn-general" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-wrench text-slate-500 w-4"></i> General
+                                </button>
+                                <button onclick="alert('Course Progress configurations active.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-chart-line text-slate-500 w-4"></i> Course Progress
+                                </button>
+                                <button onclick="alert('Milestone badges and accreditation enabled.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-ribbon text-slate-500 w-4"></i> Badges
+                                </button>
+                                <button onclick="alert('Category taxonomy managed: AI, Medicine, Physics, Engineering.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-network-wired text-slate-500 w-4"></i> Categories
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Email Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Email</span>
+                            <div class="space-y-1">
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-envelope text-slate-500 w-4"></i> Accounts
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-file-lines text-slate-500 w-4"></i> Templates
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- User Management Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">User Management</span>
+                            <div class="space-y-1">
+                                <button onclick="switchView('profile')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-user text-slate-500 w-4"></i> Users
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Payment Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Payment</span>
+                            <div class="space-y-1">
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-credit-card text-slate-500 w-4"></i> Configuration
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-dollar-sign text-slate-500 w-4"></i> Gateways
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-landmark text-slate-500 w-4"></i> Transactions
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-ticket text-slate-500 w-4"></i> Coupons
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Conferencing Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Conferencing</span>
+                            <div class="space-y-1">
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-video text-slate-500 w-4"></i> Zoom
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-desktop text-slate-500 w-4"></i> Google Meet
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Integrations Group -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Integrations</span>
+                            <div class="space-y-1">
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-comments text-slate-500 w-4"></i> Raven
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Customize Group (Image 3) -->
+                        <div>
+                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Customize</span>
+                            <div class="space-y-1">
+                                <button onclick="switchSettingsTab('branding')" id="stab-btn-branding" class="w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-palette text-slate-700 w-4"></i> Branding
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-regular fa-window-maximize text-slate-500 w-4"></i> Sidebar
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-arrow-right-to-bracket text-slate-500 w-4"></i> Signup
+                                </button>
+                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
+                                    <i class="fa-solid fa-magnifying-glass text-slate-500 w-4"></i> SEO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Main Content Panel -->
+                    <div class="flex-grow p-6 sm:p-10 bg-white">
+                        
+                        <!-- SUB-PANEL 1: BRAND SETTINGS (Verbatim Image 3) -->
+                        <div id="settings-panel-branding" class="space-y-8">
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Brand Settings</h2>
+                                <p class="text-sm text-slate-500 mt-1">Configure your Brand Name, Logo, and Favicon</p>
+                            </div>
+
+                            <div class="space-y-8 max-w-2xl">
+                                <!-- Brand Name -->
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+                                    <div>
+                                        <label class="text-sm font-semibold text-slate-800 block">Brand Name</label>
+                                        <p class="text-xs text-slate-400 mt-0.5">Set the name of your brand. Appears in the left sidebar.</p>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="setting-brand-name" value="Midad Academy LMS" class="px-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 w-56">
+                                    </div>
+                                </div>
+
+                                <!-- Brand Logo -->
+                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-100">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-16 h-16 rounded-2xl border border-slate-200 flex items-center justify-center p-2 bg-[#0A1128] overflow-hidden flex-shrink-0">
+                                            <img id="setting-logo-preview" src="./static/images/midad_logo.svg" alt="Brand Logo" class="w-full h-full object-contain">
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-slate-800 block">Brand Logo</span>
+                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears in the left sidebar. Recommended size is 32x32 px in PNG or SVG</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="brand-logo-file" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
+                                        </label>
+                                        <input type="file" id="brand-logo-file" class="hidden" accept="image/*" onchange="handleBrandLogoUpload(event)">
+                                    </div>
+                                </div>
+
+                                <!-- Favicon -->
+                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-100">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-16 h-16 rounded-2xl border border-slate-200 flex items-center justify-center p-2 bg-slate-50 flex-shrink-0">
+                                            <img id="setting-favicon-preview" src="./static/images/midad_logo.svg" alt="Favicon" class="w-8 h-8 object-contain">
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-slate-800 block">Favicon</span>
+                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears next to the title in your browser tab. Recommended size is 32x32 px in PNG or ICO</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="brand-favicon-file" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
+                                        </label>
+                                        <input type="file" id="brand-favicon-file" class="hidden" accept="image/*" onchange="handleFaviconUpload(event)">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button onclick="saveBrandSettings()" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition cursor-pointer">
+                                        Save Brand Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 2: GENERAL CONFIG (Verbatim Image 4) -->
+                        <div id="settings-panel-general" class="hidden space-y-8">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">General</h2>
+                                    <p class="text-sm text-slate-500 mt-1">Configure system-wide defaults, notifications, and contact information</p>
+                                </div>
+                                <button onclick="saveGeneralSettings()" class="px-5 py-2 rounded-xl bg-black hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition cursor-pointer">
+                                    Update
+                                </button>
+                            </div>
+
+                            <div class="space-y-6 max-w-2xl">
+                                <h3 class="text-sm font-bold text-slate-900 tracking-tight">System Configurations</h3>
+
+                                <!-- Toggle 1 -->
+                                <div class="flex items-center justify-between py-2">
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-800 block">Allow Guest Access</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, users can access the course and batch lists without logging in.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="cfg-guest-access" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Toggle 2 -->
+                                <div class="flex items-center justify-between py-2">
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-800 block">Prevent Skipping Videos</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, users will no able to move forward in a video</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="cfg-prevent-skip">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Toggle 3 -->
+                                <div class="flex items-center justify-between py-2">
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-800 block">Disable PWA</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If checked, users will not be able to install the application as a Progressive Web App.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="cfg-disable-pwa">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Toggle 4 -->
+                                <div class="flex items-center justify-between py-2">
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-800 block">Send calendar invite for evaluations</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, it sends google calendar invite to the student for evaluations.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="cfg-calendar-eval">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="pt-4 border-t border-slate-100 space-y-4">
+                                    <h3 class="text-sm font-bold text-slate-900 tracking-tight">Notifications</h3>
+
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                        <div>
+                                            <span class="text-sm font-medium text-slate-800 block">Send Notification for Published Courses</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">Notify members when a new course is published.</p>
+                                        </div>
+                                        <select id="cfg-notif-course" class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 text-xs focus:ring-2 focus:ring-slate-900">
+                                            <option value="all">All Enrolled Members</option>
+                                            <option value="batch">Specific Batches Only</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                        <div>
+                                            <span class="text-sm font-medium text-slate-800 block">Send Notification for Published Batches</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">Notify members when a new batch is published.</p>
+                                        </div>
+                                        <select id="cfg-notif-batch" class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 text-xs focus:ring-2 focus:ring-slate-900">
+                                            <option value="all">All Enrolled Members</option>
+                                            <option value="batch">Specific Batches Only</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
 
     <!-- Create Course Modal -->
     <div id="course-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -126,7 +822,7 @@
                 <h2 class="text-xl font-bold text-white flex items-center gap-2">
                     <i class="fa-solid fa-graduation-cap text-emerald-400"></i> Create New Course
                 </h2>
-                <button onclick="closeCourseModal()" class="text-slate-400 hover:text-white text-lg">
+                <button onclick="closeCourseModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -134,7 +830,7 @@
             <form id="new-course-form" onsubmit="handleCreateCourse(event)" class="mt-6 space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Course Title *</label>
-                    <input type="text" id="course-title" required placeholder="e.g. Clinical Neurology & Neuroimaging" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="course-title" required placeholder="e.g. Clinical Neurology & Advanced Diagnostics" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -144,8 +840,8 @@
                             <option value="Medical Science">Medical Science</option>
                             <option value="Artificial Intelligence">Artificial Intelligence</option>
                             <option value="Physics">Physics</option>
-                            <option value="Technology & Engineering">Technology & Engineering</option>
-                            <option value="Business & Leadership">Business & Leadership</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Business">Business</option>
                         </select>
                     </div>
                     <div>
@@ -161,20 +857,24 @@
 
                 <!-- First Lecture & Video Section -->
                 <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
-                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">First Lecture & Video Attachment</span>
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">First Lecture & Video Attachment (No Size Limit)</span>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Lecture Title</label>
-                        <input type="text" id="lecture-title" placeholder="Lecture 1: Core Principles & Examination" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <input type="text" id="lecture-title" placeholder="Lecture 1: Fundamental Overview & Concepts" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Video Source (MP4 / Direct Link / Embed)</label>
-                        <input type="text" id="lecture-video" placeholder="https://commondatastorage.googleapis.com/... or uploaded video path" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Video File (Direct local upload or URL)</label>
+                        <input type="text" id="lecture-video" placeholder="Direct video file URL or uploaded video path" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Inter-Lecture Quiz Question</label>
+                        <input type="text" id="lecture-quiz-q" placeholder="e.g. What is the primary function of neural attention layers?" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
 
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-800">
-                    <button type="button" onclick="closeCourseModal()" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-sm">Cancel</button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-500/30 flex items-center gap-2">
+                    <button type="button" onclick="closeCourseModal()" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-sm cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-500/30 flex items-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-check"></i> Save & Publish Course
                     </button>
                 </div>
@@ -182,27 +882,57 @@
         </div>
     </div>
 
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h2 class="text-base font-bold text-white">Edit Academic Profile</h2>
+                <button onclick="closeEditProfileModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="edit-profile-input-name" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Timezone</label>
+                    <input type="text" value="Africa/Cairo (GMT+3:00)" readonly class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-400">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Academic Title</label>
+                    <input type="text" id="edit-profile-input-title" value="Educational Director & Instructor" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+                </div>
+            </div>
+            <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+                <button onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl text-slate-300 hover:text-white text-xs">Cancel</button>
+                <button onclick="saveProfileChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="mt-20 border-t border-slate-800 bg-[#090e1a] py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500 gap-4">
-            <p>© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
-            <div class="flex items-center space-x-6">
-                <span>Self-Hosted & Independent</span>
+            <p id="footer-copy">© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
+            <div class="flex items-center space-x-6 text-xs">
+                <span>Africa/Cairo (GMT+3:00)</span>
                 <span>•</span>
-                <span>Unrestricted Media Storage</span>
+                <span>Direct 10GB Video Streaming</span>
+                <span>•</span>
+                <span>Independent LMS</span>
             </div>
         </div>
     </footer>
 
-    <!-- Script to manage studio, auth, and course additions -->
+    <!-- Comprehensive Scripts -->
     <script>
     const DEFAULT_COURSES = [
         {
             id: 'default-1',
             title: 'Full-Stack AI Systems & Autonomous Agents',
             category: 'Artificial Intelligence',
-            instructor_name: 'Master Administrator',
-            lesson_count: 2,
+            instructor_name: 'Omar Duhaim',
+            lesson_count: 4,
             student_count: 42,
             is_published: true,
             cover_image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
@@ -212,7 +942,7 @@
             id: 'default-2',
             title: 'Quantum Physics for Beginners',
             category: 'Physics',
-            instructor_name: 'Jane Learner',
+            instructor_name: 'Omar Duhaim',
             lesson_count: 2,
             student_count: 18,
             is_published: true,
@@ -232,17 +962,47 @@
         }
     ];
 
+    let AVAILABILITY_SLOTS = [
+        { id: 1, day: 'Sunday', start: '18:00', end: '21:00' },
+        { id: 2, day: 'Tuesday', start: '18:00', end: '21:00' },
+        { id: 3, day: 'Thursday', start: '17:00', end: '20:00' }
+    ];
+
     function checkAuth() {
-        const userStr = localStorage.getItem('midad_user');
-        if (!userStr) {
-            window.location.href = './login.html';
-            return;
+        let userStr = localStorage.getItem('midad_user');
+        let user = { name: 'Omar Duhaim', email: 'admin@lms.local', role: 'super_admin', avatar: './static/images/omar_avatar.png' };
+        if (userStr) {
+            try {
+                user = Object.assign(user, JSON.parse(userStr));
+            } catch(e) {}
         }
-        try {
-            const user = JSON.parse(userStr);
-            document.getElementById('user-display-name').innerText = user.name || 'Master Administrator';
-        } catch(e) {
-            window.location.href = './login.html';
+        localStorage.setItem('midad_user', JSON.stringify(user));
+
+        document.getElementById('greeting-name').innerText = user.name;
+        document.getElementById('sidebar-user-name').innerText = user.name;
+        document.getElementById('nav-user-name').innerText = user.name;
+        document.getElementById('dropdown-user-name').innerText = user.name;
+        document.getElementById('profile-name').innerText = user.name;
+        
+        if (user.avatar) {
+            document.getElementById('nav-avatar').src = user.avatar;
+            document.getElementById('profile-avatar-img').src = user.avatar;
+        }
+
+        const brandName = localStorage.getItem('midad_brand_name') || 'Midad Academy LMS';
+        document.getElementById('header-brand-name').innerText = brandName;
+        document.getElementById('setting-brand-name').value = brandName;
+
+        const savedLogo = localStorage.getItem('midad_brand_logo');
+        if (savedLogo) {
+            document.getElementById('header-brand-logo').src = savedLogo;
+            document.getElementById('setting-logo-preview').src = savedLogo;
+            document.getElementById('setting-favicon-preview').src = savedLogo;
+        }
+
+        const savedSlots = localStorage.getItem('midad_slots');
+        if (savedSlots) {
+            try { AVAILABILITY_SLOTS = JSON.parse(savedSlots); } catch(e) {}
         }
     }
 
@@ -251,14 +1011,242 @@
         window.location.href = './login.html';
     }
 
+    let sidebarOpen = true;
+    function toggleSidebar() {
+        const sidebar = document.getElementById('app-sidebar');
+        sidebarOpen = !sidebarOpen;
+        if (!sidebarOpen) {
+            sidebar.classList.add('hidden');
+            document.getElementById('sidebar-toggle-btn').classList.remove('bg-slate-800/80');
+            document.getElementById('sidebar-toggle-btn').classList.add('bg-blue-600', 'text-white');
+        } else {
+            sidebar.classList.remove('hidden');
+            document.getElementById('sidebar-toggle-btn').classList.add('bg-slate-800/80');
+            document.getElementById('sidebar-toggle-btn').classList.remove('bg-blue-600', 'text-white');
+        }
+        localStorage.setItem('midad_sidebar_open', sidebarOpen ? '1' : '0');
+    }
+
+    function toggleSidebarDropdown() {
+        const dropdown = document.getElementById('sidebar-learning-dropdown');
+        const caret = document.getElementById('sidebar-caret');
+        dropdown.classList.toggle('hidden');
+        caret.classList.toggle('rotate-180');
+    }
+
+    function toggleUserDropdown() {
+        const dropdown = document.getElementById('header-user-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = document.getElementById('theme-icon');
+        icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        localStorage.setItem('midad_theme', isDark ? 'dark' : 'light');
+    }
+
+    function switchView(viewName) {
+        ['courses', 'dashboard', 'profile', 'settings'].forEach(v => {
+            const el = document.getElementById('view-' + v);
+            if (el) el.classList.add('hidden');
+            const navBtn = document.getElementById('nav-btn-' + v);
+            if (navBtn) {
+                navBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5';
+            }
+        });
+
+        const target = document.getElementById('view-' + viewName);
+        if (target) target.classList.remove('hidden');
+
+        const activeNavBtn = document.getElementById('nav-btn-' + viewName);
+        if (activeNavBtn) {
+            activeNavBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5';
+        }
+
+        document.getElementById('header-user-dropdown').classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchSettingsTab(tabName) {
+        document.getElementById('settings-panel-branding').classList.add('hidden');
+        document.getElementById('settings-panel-general').classList.add('hidden');
+        
+        document.getElementById('stab-btn-branding').className = 'w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60';
+        document.getElementById('stab-btn-general').className = 'w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60';
+
+        if (tabName === 'branding') {
+            document.getElementById('settings-panel-branding').classList.remove('hidden');
+            document.getElementById('stab-btn-branding').className = 'w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2';
+        } else {
+            document.getElementById('settings-panel-general').classList.remove('hidden');
+            document.getElementById('stab-btn-general').className = 'w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2';
+        }
+    }
+
+    function switchProfileTab(tabName) {
+        ['about', 'certificates', 'roles', 'slots', 'schedule'].forEach(t => {
+            const el = document.getElementById('ptab-content-' + t);
+            if (el) el.classList.add('hidden');
+            const btn = document.getElementById('ptab-btn-' + t);
+            if (btn) btn.className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition';
+        });
+
+        const activeContent = document.getElementById('ptab-content-' + tabName);
+        if (activeContent) activeContent.classList.remove('hidden');
+
+        const activeBtn = document.getElementById('ptab-btn-' + tabName);
+        if (activeBtn) activeBtn.className = 'px-3.5 py-1.5 rounded-xl bg-slate-800 text-white font-semibold border border-slate-700 transition';
+    }
+
+    function renderSlotsTable() {
+        const tbody = document.getElementById('slots-table-body');
+        tbody.innerHTML = '';
+        AVAILABILITY_SLOTS.forEach((slot, index) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/30 transition';
+            tr.innerHTML = `
+                <td class="py-3 text-white font-medium">${slot.day}</td>
+                <td class="py-3 text-slate-300 font-mono">${slot.start}</td>
+                <td class="py-3 text-slate-300 font-mono">${slot.end}</td>
+                <td class="py-3 text-right">
+                    <button onclick="removeSlot(${index})" class="text-rose-400 hover:text-rose-300 text-xs px-2 py-1 rounded hover:bg-rose-950/40 transition cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function addAvailabilitySlotPrompt() {
+        const day = prompt('Enter Day (e.g. Monday, Wednesday, Friday):', 'Monday');
+        if (!day) return;
+        const start = prompt('Enter Start Time (e.g. 18:00):', '18:00');
+        if (!start) return;
+        const end = prompt('Enter End Time (e.g. 21:00):', '21:00');
+        if (!end) return;
+
+        AVAILABILITY_SLOTS.push({ id: Date.now(), day, start, end });
+        localStorage.setItem('midad_slots', JSON.stringify(AVAILABILITY_SLOTS));
+        renderSlotsTable();
+    }
+
+    function removeSlot(index) {
+        AVAILABILITY_SLOTS.splice(index, 1);
+        localStorage.setItem('midad_slots', JSON.stringify(AVAILABILITY_SLOTS));
+        renderSlotsTable();
+    }
+
+    function saveUnavailability() {
+        const from = document.getElementById('unavail-from').value;
+        const to = document.getElementById('unavail-to').value;
+        if (!from || !to) {
+            alert('Please select both From and To dates.');
+            return;
+        }
+        alert(`Unavailable period from ${from} to ${to} has been recorded.`);
+    }
+
+    let googleCalConnected = false;
+    function toggleGoogleCalendar() {
+        googleCalConnected = !googleCalConnected;
+        const btnText = document.getElementById('google-cal-text');
+        const btn = document.getElementById('google-cal-btn');
+        if (googleCalConnected) {
+            btnText.innerText = 'Google Calendar Synchronized (Connected)';
+            btn.className = 'px-4 py-2.5 rounded-xl bg-emerald-950/60 text-emerald-300 text-xs font-semibold border border-emerald-700/60 transition flex items-center gap-2 cursor-pointer';
+        } else {
+            btnText.innerText = 'Authorize Google Calendar Access';
+            btn.className = 'px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-2 cursor-pointer';
+        }
+    }
+
+    function handleAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const dataUrl = evt.target.result;
+            document.getElementById('profile-avatar-img').src = dataUrl;
+            document.getElementById('nav-avatar').src = dataUrl;
+
+            let user = JSON.parse(localStorage.getItem('midad_user') || '{}');
+            user.avatar = dataUrl;
+            localStorage.setItem('midad_user', JSON.stringify(user));
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function openEditProfileModal() {
+        const user = JSON.parse(localStorage.getItem('midad_user') || '{}');
+        document.getElementById('edit-profile-input-name').value = user.name || 'Omar Duhaim';
+        document.getElementById('edit-profile-modal').classList.remove('hidden');
+    }
+    function closeEditProfileModal() {
+        document.getElementById('edit-profile-modal').classList.add('hidden');
+    }
+    function saveProfileChanges() {
+        const name = document.getElementById('edit-profile-input-name').value.trim();
+        if (name) {
+            let user = JSON.parse(localStorage.getItem('midad_user') || '{}');
+            user.name = name;
+            localStorage.setItem('midad_user', JSON.stringify(user));
+            checkAuth();
+        }
+        closeEditProfileModal();
+    }
+
+    function handleBrandLogoUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const dataUrl = evt.target.result;
+            document.getElementById('setting-logo-preview').src = dataUrl;
+            document.getElementById('header-brand-logo').src = dataUrl;
+            localStorage.setItem('midad_brand_logo', dataUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleFaviconUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('setting-favicon-preview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveBrandSettings() {
+        const brandName = document.getElementById('setting-brand-name').value.trim();
+        if (brandName) {
+            localStorage.setItem('midad_brand_name', brandName);
+            document.getElementById('header-brand-name').innerText = brandName;
+        }
+        alert('Brand settings saved successfully! Logo and title updated.');
+    }
+
+    function saveGeneralSettings() {
+        const guestAccess = document.getElementById('cfg-guest-access').checked;
+        const preventSkip = document.getElementById('cfg-prevent-skip').checked;
+        const disablePwa = document.getElementById('cfg-disable-pwa').checked;
+        const calendarEval = document.getElementById('cfg-calendar-eval').checked;
+        const notifCourse = document.getElementById('cfg-notif-course').value;
+        const notifBatch = document.getElementById('cfg-notif-batch').value;
+
+        const config = { guestAccess, preventSkip, disablePwa, calendarEval, notifCourse, notifBatch };
+        localStorage.setItem('midad_general_config', JSON.stringify(config));
+        alert('General System Configurations updated successfully!');
+    }
+
     function getStoredCourses() {
         const custom = localStorage.getItem('midad_custom_courses');
         if (custom) {
-            try {
-                return JSON.parse(custom);
-            } catch(e) {
-                return [];
-            }
+            try { return JSON.parse(custom); } catch(e) { return []; }
         }
         return [];
     }
@@ -277,7 +1265,7 @@
                     <div class="flex items-center space-x-3">
                         <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400'}" alt="${c.title}" class="w-12 h-12 rounded-lg object-cover bg-slate-900 flex-shrink-0">
                         <div>
-                            <span class="font-semibold text-white block text-base">${c.title}</span>
+                            <span class="font-semibold text-white block text-sm">${c.title}</span>
                             <span class="text-xs text-slate-400">By ${c.instructor_name}</span>
                         </div>
                     </div>
@@ -304,7 +1292,7 @@
                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
                         </a>
                         ${c.id.startsWith('custom-') ? `
-                        <button onclick="deleteCourse('${c.id}')" class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 hover:text-rose-300 transition text-xs" title="Delete Course">
+                        <button onclick="deleteCourse('${c.id}')" class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 hover:text-rose-300 transition text-xs cursor-pointer" title="Delete Course">
                             <i class="fa-solid fa-trash"></i>
                         </button>` : ''}
                     </div>
@@ -328,11 +1316,12 @@
         const category = document.getElementById('course-category').value;
         const desc = document.getElementById('course-desc').value.trim();
         const cover = document.getElementById('course-cover').value.trim() || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200';
-        const lectureTitle = document.getElementById('lecture-title').value.trim() || 'Lecture 1: Introduction';
+        const lectureTitle = document.getElementById('lecture-title').value.trim() || 'Lecture 1: Fundamental Overview';
         const lectureVideo = document.getElementById('lecture-video').value.trim();
+        const quizQ = document.getElementById('lecture-quiz-q').value.trim();
 
         const userStr = localStorage.getItem('midad_user');
-        const user = userStr ? JSON.parse(userStr) : { name: 'Master Administrator' };
+        const user = userStr ? JSON.parse(userStr) : { name: 'Omar Duhaim' };
 
         const newCourse = {
             id: 'custom-' + Date.now(),
@@ -346,6 +1335,7 @@
             is_published: true,
             lecture_title: lectureTitle,
             lecture_video: lectureVideo,
+            quiz_question: quizQ,
             created_at: new Date().toISOString()
         };
 
@@ -356,7 +1346,7 @@
         closeCourseModal();
         e.target.reset();
         renderCourseTable();
-        alert('Course "' + title + '" created successfully and published to Midad Academy!');
+        alert('Course "' + title + '" published successfully to Midad Academy LMS!');
     }
 
     function deleteCourse(id) {
@@ -366,9 +1356,9 @@
         renderCourseTable();
     }
 
-    // Init
     checkAuth();
     renderCourseTable();
+    renderSlotsTable();
     </script>
 </body>
 </html>

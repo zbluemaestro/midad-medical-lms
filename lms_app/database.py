@@ -145,14 +145,14 @@ def init_db():
     super_admin = cursor.fetchone()
     if not super_admin:
         admin_email = "admin@lms.local"
-        admin_name = "Master Administrator"
+        admin_name = "Omar Duhaim"
         admin_pass_hash = generate_password_hash("AdminPass2026!")
         cursor.execute(
             "INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, 'super_admin')",
             (admin_email, admin_name, admin_pass_hash)
         )
         admin_id = cursor.lastrowid
-        print(f"[+] Initialized Master Super Admin: {admin_email} (Password: AdminPass2026!)")
+        print(f"[+] Initialized Master Super Admin: {admin_name} <{admin_email}> (Password: AdminPass2026!)")
 
         # Create Showcase Course
         cursor.execute("""

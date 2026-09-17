@@ -13,15 +13,7 @@
             <p class="text-sm text-slate-400 mt-2">Access your enrolled courses or creator studio.</p>
         </div>
 
-        <!-- Master Super Admin Credentials Hint -->
-        <div class="p-3.5 rounded-xl bg-blue-950/40 border border-blue-800/40 text-xs text-blue-300 flex items-start space-x-3">
-            <i class="fa-solid fa-key mt-0.5 text-blue-400"></i>
-            <div>
-                <span class="font-semibold block text-blue-200">Master Super Admin Credentials:</span>
-                Email: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">admin@lms.local</code><br>
-                Password: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">AdminPass2026!</code>
-            </div>
-        </div>
+
 
         <form class="mt-8 space-y-5" method="POST" action="{{ url_for('login', next=request.args.get('next')) }}">
             <div>

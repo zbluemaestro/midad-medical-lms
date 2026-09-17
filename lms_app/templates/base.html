@@ -85,6 +85,7 @@
                 <div class="flex items-center space-x-3">
                     {% if current_user %}
                         <div class="flex items-center space-x-3">
+                            <img src="{{ url_for('static', filename='images/omar_avatar.png') }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-amber-500/50">
                             <span class="text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider
                                 {% if current_user.role == 'super_admin' %} bg-amber-500/20 text-amber-300 border border-amber-500/30
                                 {% elif current_user.role == 'instructor' %} bg-emerald-500/20 text-emerald-300 border border-emerald-500/30
@@ -92,7 +93,7 @@
                                 {{ current_user.role | replace('_', ' ') }}
                             </span>
                             <span class="text-sm font-medium text-slate-300 hidden lg:inline">{{ current_user.name }}</span>
-                            <a href="{{ url_for('logout') }}" class="text-sm font-medium text-rose-400 hover:text-rose-300 transition bg-rose-950/40 px-3 py-1.5 rounded-lg border border-rose-800/40">
+                            <a href="{{ url_for('logout') }}" class="text-sm font-medium text-rose-400 hover:text-rose-300 transition bg-rose-950/40 px-3 py-1.5 rounded-lg border border-rose-800/40" title="Sign Out">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             </a>
                         </div>

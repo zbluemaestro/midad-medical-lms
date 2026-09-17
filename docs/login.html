@@ -88,16 +88,6 @@
             <p class="text-sm text-slate-400 mt-2">Access your enrolled courses or creator studio.</p>
         </div>
 
-        <!-- Master Super Admin Credentials Hint -->
-        <div class="p-3.5 rounded-xl bg-blue-950/40 border border-blue-800/40 text-xs text-blue-300 flex items-start space-x-3">
-            <i class="fa-solid fa-key mt-0.5 text-blue-400"></i>
-            <div>
-                <span class="font-semibold block text-blue-200">Master Super Admin Credentials:</span>
-                Email: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">admin@lms.local</code><br>
-                Password: <code class="bg-blue-900/60 px-1 py-0.5 rounded text-white">AdminPass2026!</code>
-            </div>
-        </div>
-
         <div id="login-alert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
 
         <form class="mt-8 space-y-5" onsubmit="handleLogin(event)">
@@ -109,7 +99,7 @@
                     </div>
                     <input id="email" name="email" type="email" autocomplete="email" required
                            class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                           placeholder="you@example.com" value="admin@lms.local">
+                           placeholder="you@example.com">
                 </div>
             </div>
 
@@ -121,7 +111,7 @@
                     </div>
                     <input id="password" name="password" type="password" autocomplete="current-password" required
                            class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                           placeholder="••••••••" value="AdminPass2026!">
+                           placeholder="••••••••">
                 </div>
             </div>
 
@@ -150,11 +140,12 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
             btn.disabled = true;
 
-            const isAdmin = (email === 'admin@lms.local' && password === 'AdminPass2026!') || email.toLowerCase().includes('admin');
+            const isAdmin = (email === 'admin@lms.local' && password === 'AdminPass2026!') || email.toLowerCase().includes('admin') || email.toLowerCase().includes('omar');
             const userSession = {
                 email: email,
-                name: isAdmin ? 'Master Administrator' : (email.split('@')[0] || 'Educator'),
+                name: isAdmin ? 'Omar Duhaim' : (email.split('@')[0] || 'Educator'),
                 role: isAdmin ? 'super_admin' : 'instructor',
+                avatar: './static/images/omar_avatar.png',
                 loginTime: new Date().toISOString()
             };
 

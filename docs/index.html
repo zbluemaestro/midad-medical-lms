@@ -293,23 +293,36 @@
         const authContainer = document.getElementById('auth-nav-container');
         const creatorSlot = document.getElementById('creator-nav-slot');
 
+        // Restore brand branding
+        const brandName = localStorage.getItem('midad_brand_name');
+        if (brandName) {
+            const el = document.querySelector('header span.text-xl');
+            if (el) el.innerText = brandName;
+        }
+        const brandLogo = localStorage.getItem('midad_brand_logo');
+        if (brandLogo) {
+            const logoEl = document.querySelector('header img');
+            if (logoEl) logoEl.src = brandLogo;
+        }
+
         if (userStr) {
             try {
                 const user = JSON.parse(userStr);
                 if (creatorSlot) {
                     creatorSlot.innerHTML = `
-                        <a href="./studio.html" class="text-sm font-semibold text-emerald-400 bg-emerald-950/50 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-1.5 hover:bg-emerald-900/50 transition">
-                            <i class="fa-solid fa-pen-ruler"></i> Creator Studio
+                        <a href="./studio.html" class="text-xs font-semibold text-emerald-300 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-1.5 hover:bg-emerald-900/50 transition">
+                            <i class="fa-solid fa-graduation-cap text-emerald-400"></i> Creator Studio
                         </a>
                     `;
                 }
                 if (authContainer) {
                     authContainer.innerHTML = `
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-950/60 border border-amber-600/40 text-amber-300">
-                                <i class="fa-solid fa-shield-halved mr-1"></i> ${user.name || 'Master Admin'}
-                            </span>
-                            <button onclick="handleIndexLogout()" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2 py-1 rounded border border-rose-900/40 bg-rose-950/20 transition" title="Sign Out">
+                            <a href="./studio.html" class="flex items-center space-x-2 p-1 rounded-xl hover:bg-slate-800 transition">
+                                <img src="${user.avatar || './static/images/omar_avatar.png'}" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-amber-500/50">
+                                <span class="text-xs font-semibold text-white hidden sm:block">${user.name || 'Omar Duhaim'}</span>
+                            </a>
+                            <button onclick="handleIndexLogout()" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2 py-1 rounded-lg border border-rose-900/40 bg-rose-950/20 transition" title="Sign Out">
                                 <i class="fa-solid fa-right-from-bracket"></i>
                             </button>
                         </div>
