@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Midad Academy LMS - Creator Studio & Admin</title>
     <!-- Tailwind CSS CDN -->
+        <script>
+        (function() {
+            var t = localStorage.getItem('midad_theme');
+            if (t === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -50,6 +62,287 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0b1120; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        /* ========================================================================== */
+        /* LIGHT THEME RULES (Clean, modern Frappe LMS aesthetic)                    */
+        /* ========================================================================== */
+        html.light body,
+        html:not(.dark) body {
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+        }
+
+        html.light .glass-card,
+        html:not(.dark) .glass-card {
+            background: #ffffff !important;
+            backdrop-filter: none !important;
+            border-color: #e2e8f0 !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        html.light .dark-panel,
+        html:not(.dark) .dark-panel {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        html.light .dark-inner,
+        html:not(.dark) .dark-inner {
+            background: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+
+        /* Background utilities in Light Mode */
+        html.light .bg-\[\#0b1120\],
+        html.light .bg-\[\#0A1128\],
+        html:not(.dark) .bg-\[\#0b1120\],
+        html:not(.dark) .bg-\[\#0A1128\] {
+            background-color: #f1f5f9 !important;
+        }
+
+        html.light .bg-slate-950,
+        html.light .bg-slate-950\/60,
+        html.light .bg-slate-900,
+        html.light .bg-slate-900\/90,
+        html.light .bg-slate-900\/80,
+        html.light .bg-slate-900\/70,
+        html.light .bg-slate-900\/60,
+        html.light .bg-slate-900\/50,
+        html:not(.dark) .bg-slate-950,
+        html:not(.dark) .bg-slate-950\/60,
+        html:not(.dark) .bg-slate-900,
+        html:not(.dark) .bg-slate-900\/90,
+        html:not(.dark) .bg-slate-900\/80,
+        html:not(.dark) .bg-slate-900\/70,
+        html:not(.dark) .bg-slate-900\/60,
+        html:not(.dark) .bg-slate-900\/50 {
+            background-color: #f8fafc !important;
+        }
+
+        html.light .bg-slate-800,
+        html.light .bg-slate-800\/80,
+        html.light .bg-slate-800\/70,
+        html.light .bg-slate-800\/60,
+        html.light .bg-slate-800\/50,
+        html.light .bg-slate-800\/40,
+        html.light .bg-slate-800\/30,
+        html:not(.dark) .bg-slate-800,
+        html:not(.dark) .bg-slate-800\/80,
+        html:not(.dark) .bg-slate-800\/70,
+        html:not(.dark) .bg-slate-800\/60,
+        html:not(.dark) .bg-slate-800\/50,
+        html:not(.dark) .bg-slate-800\/40,
+        html:not(.dark) .bg-slate-800\/30 {
+            background-color: #f1f5f9 !important;
+        }
+
+        /* Borders in Light Mode */
+        html.light .border-slate-800,
+        html.light .border-slate-800\/80,
+        html.light .border-slate-800\/60,
+        html.light .border-slate-800\/50,
+        html.light .border-slate-700,
+        html.light .border-slate-700\/60,
+        html.light .border-slate-700\/50,
+        html.light .border-slate-700\/40,
+        html:not(.dark) .border-slate-800,
+        html:not(.dark) .border-slate-800\/80,
+        html:not(.dark) .border-slate-800\/60,
+        html:not(.dark) .border-slate-800\/50,
+        html:not(.dark) .border-slate-700,
+        html:not(.dark) .border-slate-700\/60,
+        html:not(.dark) .border-slate-700\/50,
+        html:not(.dark) .border-slate-700\/40 {
+            border-color: #e2e8f0 !important;
+        }
+
+        html.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+        html.light .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
+        html:not(.dark) .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+        html:not(.dark) .divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]) {
+            border-color: #e2e8f0 !important;
+        }
+
+        /* Text colors in Light Mode */
+        html.light .text-white,
+        html:not(.dark) .text-white {
+            color: #0f172a !important;
+        }
+
+        html.light .text-slate-100,
+        html.light .text-slate-200,
+        html.light .text-slate-300,
+        html:not(.dark) .text-slate-100,
+        html:not(.dark) .text-slate-200,
+        html:not(.dark) .text-slate-300 {
+            color: #1e293b !important;
+        }
+
+        html.light .text-slate-400,
+        html:not(.dark) .text-slate-400 {
+            color: #475569 !important;
+        }
+
+        html.light .text-slate-500,
+        html:not(.dark) .text-slate-500 {
+            color: #64748b !important;
+        }
+
+        /* Preserve white text on action buttons, badges & submit buttons */
+        html.light .bg-emerald-600,
+        html.light .bg-emerald-500,
+        html.light .bg-blue-600,
+        html.light .bg-blue-500,
+        html.light .bg-rose-600,
+        html.light .bg-indigo-600,
+        html.light button.bg-emerald-600,
+        html.light button.bg-blue-600,
+        html.light a.bg-emerald-600,
+        html.light a.bg-blue-600,
+        html.light button[type="submit"],
+        html:not(.dark) .bg-emerald-600,
+        html:not(.dark) .bg-emerald-500,
+        html:not(.dark) .bg-blue-600,
+        html:not(.dark) .bg-blue-500,
+        html:not(.dark) .bg-rose-600,
+        html:not(.dark) .bg-indigo-600,
+        html:not(.dark) button.bg-emerald-600,
+        html:not(.dark) button.bg-blue-600,
+        html:not(.dark) a.bg-emerald-600,
+        html:not(.dark) a.bg-blue-600,
+        html:not(.dark) button[type="submit"] {
+            color: #ffffff !important;
+        }
+
+        html.light button.bg-emerald-600 *,
+        html.light button.bg-blue-600 *,
+        html.light a.bg-emerald-600 *,
+        html.light a.bg-blue-600 *,
+        html:not(.dark) button.bg-emerald-600 *,
+        html:not(.dark) button.bg-blue-600 *,
+        html:not(.dark) a.bg-emerald-600 *,
+        html:not(.dark) a.bg-blue-600 * {
+            color: #ffffff !important;
+        }
+
+        /* Inputs, Selects, and Textareas */
+        html.light input[type="text"],
+        html.light input[type="email"],
+        html.light input[type="password"],
+        html.light input[type="number"],
+        html.light input[type="url"],
+        html.light input[type="datetime-local"],
+        html.light select,
+        html.light textarea,
+        html:not(.dark) input[type="text"],
+        html:not(.dark) input[type="email"],
+        html:not(.dark) input[type="password"],
+        html:not(.dark) input[type="number"],
+        html:not(.dark) input[type="url"],
+        html:not(.dark) input[type="datetime-local"],
+        html:not(.dark) select,
+        html:not(.dark) textarea {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+        }
+
+        html.light input::placeholder,
+        html.light textarea::placeholder,
+        html:not(.dark) input::placeholder,
+        html:not(.dark) textarea::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        /* Tables in Light Mode */
+        html.light thead,
+        html:not(.dark) thead {
+            background-color: #f8fafc !important;
+            color: #475569 !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        html.light tbody tr:hover,
+        html:not(.dark) tbody tr:hover {
+            background-color: #f8fafc !important;
+        }
+
+        /* Hover effects on neutral buttons */
+        html.light .hover\:bg-slate-800\/70:hover,
+        html.light .hover\:bg-slate-800\/60:hover,
+        html.light .hover\:bg-slate-800\/50:hover,
+        html.light .hover\:bg-slate-800\/30:hover,
+        html.light .hover\:bg-slate-800:hover,
+        html.light .hover\:bg-slate-700:hover,
+        html:not(.dark) .hover\:bg-slate-800\/70:hover,
+        html:not(.dark) .hover\:bg-slate-800\/60:hover,
+        html:not(.dark) .hover\:bg-slate-800\/50:hover,
+        html:not(.dark) .hover\:bg-slate-800\/30:hover,
+        html:not(.dark) .hover\:bg-slate-800:hover,
+        html:not(.dark) .hover\:bg-slate-700:hover {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        /* Switch toggle slider in Light Mode */
+        html.light .slider,
+        html:not(.dark) .slider {
+            background-color: #cbd5e1 !important;
+        }
+
+        html.light input:checked + .slider,
+        html:not(.dark) input:checked + .slider {
+            background-color: #10b981 !important;
+        }
+
+        /* Dropdown menu in Light Mode */
+        html.light #header-user-dropdown,
+        html:not(.dark) #header-user-dropdown {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Scrollbar in Light Mode */
+        html.light ::-webkit-scrollbar-track,
+        html:not(.dark) ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        html.light ::-webkit-scrollbar-thumb,
+        html:not(.dark) ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+
+        /* Settings Active Item in Light Mode */
+        html.light .stab-active,
+        html:not(.dark) .stab-active {
+            background-color: #ecfdf5 !important;
+            color: #059669 !important;
+            border-left-color: #10b981 !important;
+        }
+        html.light .stab-inactive,
+        html:not(.dark) .stab-inactive {
+            color: #64748b !important;
+        }
+        html.light .stab-inactive:hover,
+        html:not(.dark) .stab-inactive:hover {
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+        }
+
+        /* Sidebar active item in Light Mode */
+        html.light .side-active,
+        html:not(.dark) .side-active {
+            background-color: #ecfdf5 !important;
+            color: #059669 !important;
+            border-color: #a7f3d0 !important;
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased bg-[#0b1120] text-slate-100">
@@ -160,7 +453,8 @@
                             <i class="fa-regular fa-user text-slate-400 w-4"></i> My Profile
                         </button>
                         <button onclick="toggleTheme()" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
-                            <i class="fa-solid fa-sun text-slate-400 w-4"></i> Toggle Theme
+                            <i class="fa-solid fa-sun text-slate-400 w-4" id="sidebar-theme-icon"></i>
+                            <span id="sidebar-theme-text">Toggle Theme (Light/Dark)</span>
                         </button>
                         <button onclick="switchView('settings'); switchSettingsTab('general')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
                             <i class="fa-solid fa-gear text-slate-400 w-4"></i> Settings
@@ -183,31 +477,9 @@
                         <span>My Profile & Slots</span>
                     </button>
                     
-                    <div class="pt-2 pb-1 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Admin Controls</div>
-                    
-                    <button onclick="switchView('settings'); switchSettingsTab('general')" id="side-link-settings" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-sliders w-4 text-rose-400"></i>
-                        <span>General & Progress</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('users')" id="side-link-users" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-users w-4 text-cyan-400"></i>
-                        <span>User Management</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('payment')" id="side-link-payment" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-coins w-4 text-amber-400"></i>
-                        <span>Payment & Currencies</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('zoom')" id="side-link-zoom" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-video w-4 text-blue-400"></i>
-                        <span>Zoom Lectures</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('meet')" id="side-link-meet" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-desktop w-4 text-emerald-400"></i>
-                        <span>Google Meet</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('branding')" id="side-link-branding" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-palette w-4 text-fuchsia-400"></i>
-                        <span>Brand & Logo</span>
+                    <button onclick="switchView('settings')" id="side-link-settings" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-gear w-4 text-slate-400"></i>
+                        <span>Settings</span>
                     </button>
                     
                     <div class="pt-2"></div>
@@ -1427,11 +1699,47 @@
     }
 
     function toggleTheme() {
-        document.documentElement.classList.toggle('dark');
+        const htmlEl = document.documentElement;
+        const isCurrentlyDark = htmlEl.classList.contains('dark');
+        
+        if (isCurrentlyDark) {
+            htmlEl.classList.remove('dark');
+            htmlEl.classList.add('light');
+            localStorage.setItem('midad_theme', 'light');
+        } else {
+            htmlEl.classList.remove('light');
+            htmlEl.classList.add('dark');
+            localStorage.setItem('midad_theme', 'dark');
+        }
+        updateThemeUI();
+    }
+
+    function updateThemeUI() {
         const isDark = document.documentElement.classList.contains('dark');
-        const icon = document.getElementById('theme-icon');
-        icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-        localStorage.setItem('midad_theme', isDark ? 'dark' : 'light');
+        const headerIcon = document.getElementById('theme-icon');
+        if (headerIcon) {
+            headerIcon.className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon text-indigo-600';
+        }
+        const sideThemeText = document.getElementById('sidebar-theme-text');
+        if (sideThemeText) {
+            sideThemeText.innerText = isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme';
+        }
+        const sideThemeIcon = document.getElementById('sidebar-theme-icon');
+        if (sideThemeIcon) {
+            sideThemeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400 w-4' : 'fa-solid fa-moon text-indigo-600 w-4';
+        }
+    }
+
+    function initTheme() {
+        const saved = localStorage.getItem('midad_theme') || 'dark';
+        if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+        } else {
+            document.documentElement.classList.remove('light');
+            document.documentElement.classList.add('dark');
+        }
+        updateThemeUI();
     }
 
     // Top View Switcher
@@ -1443,6 +1751,10 @@
             if (navBtn) {
                 navBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5';
             }
+            const sideBtn = document.getElementById('side-link-' + v);
+            if (sideBtn) {
+                sideBtn.className = 'w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3';
+            }
         });
 
         const target = document.getElementById('view-' + viewName);
@@ -1451,6 +1763,11 @@
         const activeNavBtn = document.getElementById('nav-btn-' + viewName);
         if (activeNavBtn) {
             activeNavBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5';
+        }
+
+        const activeSideBtn = document.getElementById('side-link-' + viewName);
+        if (activeSideBtn) {
+            activeSideBtn.className = 'w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-3 font-semibold side-active';
         }
 
         document.getElementById('header-user-dropdown').classList.add('hidden');
@@ -2041,6 +2358,7 @@
     }
 
     // Initialize
+    initTheme();
     checkAuth();
     renderCourseTable();
     renderSlotsTable();
