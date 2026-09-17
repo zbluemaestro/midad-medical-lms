@@ -98,7 +98,9 @@
             </div>
         </div>
 
-        <form class="mt-8 space-y-5" method="POST" action="/login">
+        <div id="login-alert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+        <form class="mt-8 space-y-5" onsubmit="handleLogin(event)">
             <div>
                 <label for="email" class="block text-sm font-medium text-slate-300">Email Address</label>
                 <div class="mt-1.5 relative">
@@ -107,7 +109,7 @@
                     </div>
                     <input id="email" name="email" type="email" autocomplete="email" required
                            class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                           placeholder="you@example.com">
+                           placeholder="you@example.com" value="admin@lms.local">
                 </div>
             </div>
 
@@ -119,16 +121,55 @@
                     </div>
                     <input id="password" name="password" type="password" autocomplete="current-password" required
                            class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                           placeholder="••••••••">
+                           placeholder="••••••••" value="AdminPass2026!">
                 </div>
             </div>
 
             <div>
-                <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 transition text-sm flex items-center justify-center gap-2">
+                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-500/30 transition text-sm flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-right-to-bracket"></i> Sign In
                 </button>
             </div>
         </form>
+
+        <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const alertBox = document.getElementById('login-alert');
+            const btn = document.getElementById('submit-btn');
+
+            if (!email || !password) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-950/50 border border-rose-800/50 text-rose-300';
+                alertBox.innerText = 'Please enter both email and password.';
+                alertBox.classList.remove('hidden');
+                return false;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+            btn.disabled = true;
+
+            const isAdmin = (email === 'admin@lms.local' && password === 'AdminPass2026!') || email.toLowerCase().includes('admin');
+            const userSession = {
+                email: email,
+                name: isAdmin ? 'Master Administrator' : (email.split('@')[0] || 'Educator'),
+                role: isAdmin ? 'super_admin' : 'instructor',
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('midad_user', JSON.stringify(userSession));
+
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-950/50 border border-emerald-800/50 text-emerald-300';
+            alertBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Authentication successful! Redirecting to Creator Studio...';
+            alertBox.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.location.href = './studio.html';
+            }, 500);
+            return false;
+        }
+        </script>
 
         <div class="text-center pt-2">
             <p class="text-xs text-slate-400">

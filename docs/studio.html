@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio - Midad Academy LMS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        darkbg: '#0b1120',
+                        darkcard: '#151f32',
+                        darkborder: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0b1120; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+        .glass-card { background: rgba(21, 31, 50, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand / Logo -->
+                <a href="./index.html" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-[#0A1128] border border-amber-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition overflow-hidden">
+                        <img src="./static/images/midad_logo.svg" alt="Midad Academy LMS Logo" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-white block">Midad Academy LMS</span>
+                        <span class="text-xs text-amber-400 font-medium hidden sm:block">Modern High-Performance Learning Platform</span>
+                    </div>
+                </a>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="./index.html" class="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-compass text-slate-400"></i> Browse Courses
+                    </a>
+                    <a href="./studio.html" class="text-sm font-semibold text-emerald-400 bg-emerald-950/50 px-3.5 py-1.5 rounded-xl border border-emerald-700/50 flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen-ruler"></i> Creator Studio
+                    </a>
+                </nav>
+
+                <!-- Auth / User Corner -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-950/60 border border-amber-600/40 text-amber-300">
+                            <i class="fa-solid fa-shield-halved mr-1"></i> <span id="user-display-name">Master Administrator</span>
+                        </span>
+                        <button onclick="handleLogout()" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2.5 py-1.5 rounded-lg border border-rose-900/40 bg-rose-950/30 transition flex items-center gap-1" title="Sign Out">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-800 gap-4">
+                <div>
+                    <div class="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">
+                        <i class="fa-solid fa-pen-ruler"></i>
+                        <span>Admin & Creator Studio</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight">Course Management Dashboard</h1>
+                    <p class="text-sm text-slate-400 mt-1">Create courses, upload lecture videos, design interactive quizzes, and publish to students.</p>
+                </div>
+                <div>
+                    <button onclick="openCourseModal()" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold shadow-lg shadow-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-plus"></i> Create New Course
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notice Banner -->
+            <div class="mt-6 p-4 rounded-2xl bg-blue-950/30 border border-blue-800/40 flex items-start space-x-3 text-sm text-blue-200">
+                <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 text-lg"></i>
+                <div>
+                    <span class="font-bold text-white">Full Admin Access Active</span>
+                    <p class="text-xs text-blue-300/80 mt-0.5">You are signed in as Master Administrator. Any course created here will immediately appear in your course catalog. Direct video uploads and auto-graded quizzes are fully enabled.</p>
+                </div>
+            </div>
+
+            <!-- Courses Table -->
+            <div class="mt-8 glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Course</th>
+                                <th class="px-6 py-4">Category</th>
+                                <th class="px-6 py-4">Lectures</th>
+                                <th class="px-6 py-4">Students</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="course-table-body" class="divide-y divide-slate-800/60">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Course Modal -->
+    <div id="course-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-2xl w-full p-6 sm:p-8 rounded-3xl border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-emerald-400"></i> Create New Course
+                </h2>
+                <button onclick="closeCourseModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="new-course-form" onsubmit="handleCreateCourse(event)" class="mt-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Course Title *</label>
+                    <input type="text" id="course-title" required placeholder="e.g. Clinical Neurology & Neuroimaging" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Category *</label>
+                        <select id="course-category" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="Medical Science">Medical Science</option>
+                            <option value="Artificial Intelligence">Artificial Intelligence</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Technology & Engineering">Technology & Engineering</option>
+                            <option value="Business & Leadership">Business & Leadership</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Cover Image URL</label>
+                        <input type="url" id="course-cover" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Course Description *</label>
+                    <textarea id="course-desc" rows="3" required placeholder="Comprehensive course overview, syllabus breakdown, and clinical learning outcomes..." class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <!-- First Lecture & Video Section -->
+                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">First Lecture & Video Attachment</span>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Lecture Title</label>
+                        <input type="text" id="lecture-title" placeholder="Lecture 1: Core Principles & Examination" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Video Source (MP4 / Direct Link / Embed)</label>
+                        <input type="text" id="lecture-video" placeholder="https://commondatastorage.googleapis.com/... or uploaded video path" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-800">
+                    <button type="button" onclick="closeCourseModal()" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-sm">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg shadow-emerald-500/30 flex items-center gap-2">
+                        <i class="fa-solid fa-check"></i> Save & Publish Course
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-slate-800 bg-[#090e1a] py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500 gap-4">
+            <p>© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
+            <div class="flex items-center space-x-6">
+                <span>Self-Hosted & Independent</span>
+                <span>•</span>
+                <span>Unrestricted Media Storage</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script to manage studio, auth, and course additions -->
+    <script>
+    const DEFAULT_COURSES = [
+        {
+            id: 'default-1',
+            title: 'Full-Stack AI Systems & Autonomous Agents',
+            category: 'Artificial Intelligence',
+            instructor_name: 'Master Administrator',
+            lesson_count: 2,
+            student_count: 42,
+            is_published: true,
+            cover_image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
+            link: './course_full-stack-ai-systems.html'
+        },
+        {
+            id: 'default-2',
+            title: 'Quantum Physics for Beginners',
+            category: 'Physics',
+            instructor_name: 'Jane Learner',
+            lesson_count: 2,
+            student_count: 18,
+            is_published: true,
+            cover_image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80',
+            link: './course_quantum-physics-for-beginners-705.html'
+        },
+        {
+            id: 'default-3',
+            title: 'Anatomy & Histology: Comprehensive Medical Module',
+            category: 'Medical Science',
+            instructor_name: 'Prof. Tariq Al-Mansoor',
+            lesson_count: 4,
+            student_count: 128,
+            is_published: true,
+            cover_image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1200&auto=format&fit=crop&q=80',
+            link: './course_anatomy---histology-1161.html'
+        }
+    ];
+
+    function checkAuth() {
+        const userStr = localStorage.getItem('midad_user');
+        if (!userStr) {
+            window.location.href = './login.html';
+            return;
+        }
+        try {
+            const user = JSON.parse(userStr);
+            document.getElementById('user-display-name').innerText = user.name || 'Master Administrator';
+        } catch(e) {
+            window.location.href = './login.html';
+        }
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('midad_user');
+        window.location.href = './login.html';
+    }
+
+    function getStoredCourses() {
+        const custom = localStorage.getItem('midad_custom_courses');
+        if (custom) {
+            try {
+                return JSON.parse(custom);
+            } catch(e) {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    function renderCourseTable() {
+        const custom = getStoredCourses();
+        const allCourses = [...custom, ...DEFAULT_COURSES];
+        const tbody = document.getElementById('course-table-body');
+        tbody.innerHTML = '';
+
+        allCourses.forEach(c => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/30 transition';
+            tr.innerHTML = `
+                <td class="px-6 py-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="${c.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400'}" alt="${c.title}" class="w-12 h-12 rounded-lg object-cover bg-slate-900 flex-shrink-0">
+                        <div>
+                            <span class="font-semibold text-white block text-base">${c.title}</span>
+                            <span class="text-xs text-slate-400">By ${c.instructor_name}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-blue-400 border border-slate-700">
+                        ${c.category}
+                    </span>
+                </td>
+                <td class="px-6 py-4 font-semibold text-white">
+                    <i class="fa-solid fa-film text-blue-400 mr-1.5"></i> ${c.lesson_count || 1}
+                </td>
+                <td class="px-6 py-4 font-semibold text-white">
+                    <i class="fa-solid fa-users text-emerald-400 mr-1.5"></i> ${c.student_count || 0}
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Published
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                        <a href="${c.link || './index.html'}" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition text-xs" title="View Course">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        ${c.id.startsWith('custom-') ? `
+                        <button onclick="deleteCourse('${c.id}')" class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 hover:text-rose-300 transition text-xs" title="Delete Course">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>` : ''}
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function openCourseModal() {
+        document.getElementById('course-modal').classList.remove('hidden');
+    }
+
+    function closeCourseModal() {
+        document.getElementById('course-modal').classList.add('hidden');
+    }
+
+    function handleCreateCourse(e) {
+        e.preventDefault();
+        const title = document.getElementById('course-title').value.trim();
+        const category = document.getElementById('course-category').value;
+        const desc = document.getElementById('course-desc').value.trim();
+        const cover = document.getElementById('course-cover').value.trim() || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200';
+        const lectureTitle = document.getElementById('lecture-title').value.trim() || 'Lecture 1: Introduction';
+        const lectureVideo = document.getElementById('lecture-video').value.trim();
+
+        const userStr = localStorage.getItem('midad_user');
+        const user = userStr ? JSON.parse(userStr) : { name: 'Master Administrator' };
+
+        const newCourse = {
+            id: 'custom-' + Date.now(),
+            title: title,
+            category: category,
+            description: desc,
+            cover_image: cover,
+            instructor_name: user.name,
+            lesson_count: 1,
+            student_count: 0,
+            is_published: true,
+            lecture_title: lectureTitle,
+            lecture_video: lectureVideo,
+            created_at: new Date().toISOString()
+        };
+
+        const existing = getStoredCourses();
+        existing.unshift(newCourse);
+        localStorage.setItem('midad_custom_courses', JSON.stringify(existing));
+
+        closeCourseModal();
+        e.target.reset();
+        renderCourseTable();
+        alert('Course "' + title + '" created successfully and published to Midad Academy!');
+    }
+
+    function deleteCourse(id) {
+        if (!confirm('Are you sure you want to remove this course?')) return;
+        const existing = getStoredCourses().filter(c => c.id !== id);
+        localStorage.setItem('midad_custom_courses', JSON.stringify(existing));
+        renderCourseTable();
+    }
+
+    // Init
+    checkAuth();
+    renderCourseTable();
+    </script>
+</body>
+</html>

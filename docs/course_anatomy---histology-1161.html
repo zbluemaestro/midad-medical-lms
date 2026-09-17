@@ -152,11 +152,21 @@
                 </div>
 
                 
-                <form method="POST" action="/course/anatomy---histology-1161/enroll">
-                    <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition flex items-center justify-center gap-2">
+                <div id="enroll-box">
+                    <button type="button" onclick="handleCourseEnrollment(this)" class="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition flex items-center justify-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-check"></i> Enroll in Course
                     </button>
-                </form>
+                </div>
+                <script>
+                function handleCourseEnrollment(btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enrolling...';
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        const box = document.getElementById('enroll-box');
+                        box.innerHTML = '<div class="p-3.5 rounded-xl bg-emerald-950/60 border border-emerald-700/60 text-center text-emerald-300 font-semibold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400"></i> Enrolled! Lifetime Access Granted.</div>';
+                    }, 400);
+                }
+                </script>
                 
             </div>
         </div>

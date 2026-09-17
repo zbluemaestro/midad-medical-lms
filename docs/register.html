@@ -88,7 +88,9 @@
             <p class="text-sm text-slate-400 mt-2">Sign up to enroll in courses and take quizzes.</p>
         </div>
 
-        <form class="mt-8 space-y-5" method="POST" action="/register">
+        <div id="register-alert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+        <form class="mt-8 space-y-5" onsubmit="handleRegister(event)">
             <div>
                 <label for="name" class="block text-sm font-medium text-slate-300">Full Name</label>
                 <div class="mt-1.5 relative">
@@ -97,7 +99,7 @@
                     </div>
                     <input id="name" name="name" type="text" required
                            class="block w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
-                           placeholder="John Doe">
+                           placeholder="Dr. Ahmed Mansoor">
                 </div>
             </div>
 
@@ -127,15 +129,54 @@
 
             <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400">
                 <i class="fa-solid fa-info-circle text-blue-400 mr-1"></i>
-                You will be registered as a <strong>Student</strong>. The Super Admin can promote you to <strong>Course Creator</strong> anytime!
+                You will be registered as a <strong>Student / Educator</strong> with full course access.
             </div>
 
             <div>
-                <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-500/30 transition text-sm flex items-center justify-center gap-2">
+                <button type="submit" id="reg-btn" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-500/30 transition text-sm flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-check"></i> Register Now
                 </button>
             </div>
         </form>
+
+        <script>
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const alertBox = document.getElementById('register-alert');
+            const btn = document.getElementById('reg-btn');
+
+            if (!name || !email || !password) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-950/50 border border-rose-800/50 text-rose-300';
+                alertBox.innerText = 'Please complete all required fields.';
+                alertBox.classList.remove('hidden');
+                return false;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+            btn.disabled = true;
+
+            const userSession = {
+                email: email,
+                name: name,
+                role: 'student',
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('midad_user', JSON.stringify(userSession));
+
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-950/50 border border-emerald-800/50 text-emerald-300';
+            alertBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Account created successfully! Redirecting to Home...';
+            alertBox.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.location.href = './index.html';
+            }, 600);
+            return false;
+        }
+        </script>
 
         <div class="text-center pt-2">
             <p class="text-xs text-slate-400">
