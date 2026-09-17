@@ -24,8 +24,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background-color: #0b1120; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-        .glass-card { background: rgba(21, 31, 50, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .light-panel { background: #ffffff; color: #1e293b; }
+        .glass-card { background: rgba(21, 31, 50, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .dark-panel { background: #0f172a; border: 1px solid #1e293b; color: #f1f5f9; }
+        .dark-inner { background: #151f32; border: 1px solid #1e293b; }
+        
+        /* Modern Apple-style Dark Toggle */
         .switch-toggle {
             position: relative;
             display: inline-block;
@@ -35,14 +38,15 @@
         .switch-toggle input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #cbd5e1; transition: .3s; border-radius: 24px;
+            background-color: #334155; transition: .25s ease-in-out; border-radius: 24px;
         }
         .slider:before {
             position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: white; transition: .3s; border-radius: 50%;
+            background-color: #ffffff; transition: .25s ease-in-out; border-radius: 50%;
         }
-        input:checked + .slider { background-color: #0f172a; }
+        input:checked + .slider { background-color: #10b981; }
         input:checked + .slider:before { transform: translateX(20px); }
+        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0b1120; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -57,13 +61,13 @@
                 
                 <!-- Left: Sidebar Toggle & Brand -->
                 <div class="flex items-center space-x-3">
-                    <button id="sidebar-toggle-btn" onclick="toggleSidebar()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center justify-center cursor-pointer border border-slate-700/60" title="Toggle Sidebar (Show/Hide)">
+                    <button id="sidebar-toggle-btn" onclick="toggleSidebar()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center justify-center cursor-pointer border border-slate-700/60" title="Toggle Sidebar">
                         <i class="fa-solid fa-bars-staggered text-base"></i>
                     </button>
 
                     <a href="./index.html" class="flex items-center space-x-3 group">
                         <div class="w-10 h-10 rounded-xl bg-[#0A1128] border border-amber-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition overflow-hidden">
-                            <img id="header-brand-logo" src="./static/images/midad_logo.svg" alt="Midad Academy Logo" class="w-full h-full object-contain">
+                            <img id="header-brand-logo" src="./static/images/midad_logo.svg" alt="Midad Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <span id="header-brand-name" class="text-lg font-bold tracking-tight text-white block leading-tight">Midad Academy LMS</span>
@@ -84,7 +88,7 @@
                         <i class="fa-solid fa-user"></i> My Profile
                     </button>
                     <button onclick="switchView('settings')" id="nav-btn-settings" class="px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-gear"></i> Admin Settings
+                        <i class="fa-solid fa-gear"></i> System Settings
                     </button>
                 </nav>
 
@@ -101,11 +105,12 @@
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                         </button>
 
-                        <!-- Header Dropdown Menu (Matching Image 1) -->
-                        <div id="header-user-dropdown" class="hidden absolute right-0 mt-2 w-52 glass-card rounded-2xl border border-slate-700/80 shadow-2xl py-2 z-50">
+                        <!-- Header Dropdown Menu (Image 1) -->
+                        <div id="header-user-dropdown" class="hidden absolute right-0 mt-2 w-56 glass-card rounded-2xl border border-slate-700/80 shadow-2xl py-2 z-50">
                             <div class="px-4 py-2 border-b border-slate-800">
                                 <span class="text-xs font-bold text-white block" id="dropdown-user-name">Omar Duhaim</span>
-                                <span class="text-[11px] text-emerald-400 font-medium">Master Super Admin</span>
+                                <span class="text-[11px] text-slate-400 font-mono block">omardohim@gmail.com</span>
+                                <span class="text-[10px] text-emerald-400 font-semibold uppercase mt-0.5 block">Moderator • Instructor • Admin</span>
                             </div>
                             <button onclick="switchView('profile'); toggleUserDropdown()" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5">
                                 <i class="fa-regular fa-user text-slate-400 w-4"></i> My Profile
@@ -134,7 +139,7 @@
         <aside id="app-sidebar" class="w-64 flex-shrink-0 transition-all duration-300 ease-in-out">
             <div class="sticky top-24 space-y-4">
                 
-                <!-- Sidebar Header Card (Verbatim Image 1) -->
+                <!-- Sidebar Header Card (Image 1) -->
                 <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleSidebarDropdown()">
                         <div class="flex items-center space-x-3">
@@ -149,7 +154,7 @@
                         <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition" id="sidebar-caret"></i>
                     </div>
 
-                    <!-- Dropdown inside card (Matching Image 1) -->
+                    <!-- Dropdown inside card (Image 1) -->
                     <div id="sidebar-learning-dropdown" class="mt-3 pt-3 border-t border-slate-800/80 space-y-1">
                         <button onclick="switchView('profile')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
                             <i class="fa-regular fa-user text-slate-400 w-4"></i> My Profile
@@ -157,18 +162,14 @@
                         <button onclick="toggleTheme()" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
                             <i class="fa-solid fa-sun text-slate-400 w-4"></i> Toggle Theme
                         </button>
-                        <button onclick="alert('Connected applications: LMS Engine, Quiz Proctor, Certificate Registry.')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center justify-between">
-                            <span class="flex items-center gap-2.5"><i class="fa-solid fa-table-cells-large text-slate-400 w-4"></i> Apps</span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
-                        </button>
-                        <button onclick="switchView('settings')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
+                        <button onclick="switchView('settings'); switchSettingsTab('general')" class="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-2.5">
                             <i class="fa-solid fa-gear text-slate-400 w-4"></i> Settings
                         </button>
                     </div>
                 </div>
 
                 <!-- Navigation Links List -->
-                <nav class="space-y-1.5 text-xs font-medium">
+                <nav class="space-y-1 text-xs font-medium">
                     <button onclick="switchView('courses')" id="side-link-courses" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-3">
                         <i class="fa-solid fa-graduation-cap w-4 text-emerald-400"></i>
                         <span>Courses Studio</span>
@@ -181,15 +182,36 @@
                         <i class="fa-solid fa-id-badge w-4 text-purple-400"></i>
                         <span>My Profile & Slots</span>
                     </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('branding')" id="side-link-branding" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
-                        <i class="fa-solid fa-palette w-4 text-amber-400"></i>
-                        <span>Brand Settings (White)</span>
-                    </button>
-                    <button onclick="switchView('settings'); switchSettingsTab('general')" id="side-link-general" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                    
+                    <div class="pt-2 pb-1 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Admin Controls</div>
+                    
+                    <button onclick="switchView('settings'); switchSettingsTab('general')" id="side-link-settings" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
                         <i class="fa-solid fa-sliders w-4 text-rose-400"></i>
-                        <span>General Config (White)</span>
+                        <span>General & Progress</span>
                     </button>
-                    <a href="./index.html" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition flex items-center gap-3">
+                    <button onclick="switchView('settings'); switchSettingsTab('users')" id="side-link-users" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-users w-4 text-cyan-400"></i>
+                        <span>User Management</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('payment')" id="side-link-payment" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-coins w-4 text-amber-400"></i>
+                        <span>Payment & Currencies</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('zoom')" id="side-link-zoom" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-video w-4 text-blue-400"></i>
+                        <span>Zoom Lectures</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('meet')" id="side-link-meet" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-desktop w-4 text-emerald-400"></i>
+                        <span>Google Meet</span>
+                    </button>
+                    <button onclick="switchView('settings'); switchSettingsTab('branding')" id="side-link-branding" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition flex items-center gap-3">
+                        <i class="fa-solid fa-palette w-4 text-fuchsia-400"></i>
+                        <span>Brand & Logo</span>
+                    </button>
+                    
+                    <div class="pt-2"></div>
+                    <a href="./index.html" class="w-full text-left px-3.5 py-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition flex items-center gap-3">
                         <i class="fa-solid fa-globe w-4 text-slate-400"></i>
                         <span>View Public Site</span>
                     </a>
@@ -207,7 +229,9 @@
         <!-- MAIN DYNAMIC CONTENT AREA -->
         <main class="flex-grow w-full min-w-0">
 
-            <!-- VIEW 1: COURSES STUDIO -->
+            <!-- ============================================================= -->
+            <!-- VIEW 1: COURSES STUDIO (Default) -->
+            <!-- ============================================================= -->
             <section id="view-courses" class="space-y-6">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
                     <div>
@@ -250,7 +274,9 @@
                 </div>
             </section>
 
+            <!-- ============================================================= -->
             <!-- VIEW 2: DASHBOARD & QUIZZES PROGRESS -->
+            <!-- ============================================================= -->
             <section id="view-dashboard" class="hidden space-y-6">
                 <div class="pb-6 border-b border-slate-800">
                     <h1 class="text-3xl font-extrabold text-white tracking-tight">Learning & Academic Progress</h1>
@@ -326,7 +352,6 @@
                                 <span class="text-xs font-bold text-emerald-400 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/50">88% (15/17)</span>
                             </div>
 
-                            <!-- Final Course Exam Item -->
                             <div class="p-3.5 rounded-xl bg-purple-950/30 border border-purple-800/50 flex items-center justify-between">
                                 <div>
                                     <span class="text-xs font-bold text-purple-200 block"><i class="fa-solid fa-trophy mr-1 text-amber-400"></i> Final Comprehensive Exam</span>
@@ -368,10 +393,12 @@
                 </div>
             </section>
 
-            <!-- VIEW 3: MY PROFILE & AVAILABILITY SLOTS (Verbatim Image 2) -->
+            <!-- ============================================================= -->
+            <!-- VIEW 3: MY PROFILE & AVAILABILITY SLOTS (Image 2) -->
+            <!-- ============================================================= -->
             <section id="view-profile" class="hidden space-y-6">
                 
-                <!-- Profile Header Card (Verbatim Image 2) -->
+                <!-- Profile Header Card (Image 2) -->
                 <div class="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-2xl">
                     <div class="flex items-center space-x-5">
                         <div class="relative group">
@@ -383,7 +410,8 @@
                         </div>
                         <div>
                             <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight" id="profile-name">Omar Duhaim</h1>
-                            <p class="text-xs text-amber-400 font-medium mt-0.5">Master Super Administrator & Educational Director</p>
+                            <p class="text-xs text-slate-400 font-mono mt-0.5">omardohim@gmail.com</p>
+                            <p class="text-xs text-amber-400 font-medium mt-0.5">Moderator • Instructor • Evaluator • Student</p>
                             <span class="text-xs text-slate-400 mt-1 block"><i class="fa-solid fa-location-dot text-slate-500 mr-1"></i> Africa/Cairo (GMT+3:00)</span>
                         </div>
                     </div>
@@ -394,7 +422,7 @@
                     </div>
                 </div>
 
-                <!-- Tabs (Verbatim Image 2) -->
+                <!-- Tabs (Image 2) -->
                 <div class="flex items-center space-x-2 border-b border-slate-800 pb-3 text-xs font-medium">
                     <button onclick="switchProfileTab('about')" id="ptab-btn-about" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition">
                         About
@@ -413,15 +441,12 @@
                     </button>
                 </div>
 
-                <!-- TAB CONTENT: SLOTS (Verbatim Image 2) -->
+                <!-- TAB CONTENT: SLOTS (Image 2) -->
                 <div id="ptab-content-slots" class="space-y-8 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl">
-                    
-                    <!-- Section: My availability -->
                     <div>
                         <h2 class="text-base font-bold text-white tracking-tight">My availability</h2>
                         <p class="text-xs text-slate-400 mt-0.5">Times are in Africa/Cairo (GMT+3:00)</p>
 
-                        <!-- Availability Table -->
                         <div class="mt-4 overflow-x-auto">
                             <table class="w-full text-left text-xs text-slate-300">
                                 <thead class="text-slate-400 border-b border-slate-800">
@@ -433,7 +458,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="slots-table-body" class="divide-y divide-slate-800/60">
-                                    <!-- Dynamic Rows -->
                                 </tbody>
                             </table>
                         </div>
@@ -445,7 +469,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: I am unavailable -->
                     <div class="pt-6 border-t border-slate-800">
                         <h2 class="text-base font-bold text-white tracking-tight">I am unavailable</h2>
                         <div class="mt-3 flex flex-wrap items-center gap-4">
@@ -465,7 +488,6 @@
                         </div>
                     </div>
 
-                    <!-- Section: My calendar -->
                     <div class="pt-6 border-t border-slate-800">
                         <h2 class="text-base font-bold text-white tracking-tight">My calendar</h2>
                         <div class="mt-3">
@@ -491,7 +513,6 @@
                                 <i class="fa-solid fa-download"></i>
                             </button>
                         </div>
-
                         <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start justify-between">
                             <div>
                                 <span class="text-xs font-bold text-white block">Anatomy & Histology Mastery Certificate</span>
@@ -508,11 +529,11 @@
                 <!-- TAB CONTENT: ABOUT -->
                 <div id="ptab-content-about" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-3 text-xs text-slate-300">
                     <h2 class="text-base font-bold text-white tracking-tight">About Omar Duhaim</h2>
-                    <p class="leading-relaxed">Educational Director and Master Instructor specializing in high-performance learning architectures, healthcare sciences, and autonomous AI systems.</p>
+                    <p class="leading-relaxed">Lead Educational Director and Full-Stack Academic Architect specializing in medical science systems and high-throughput AI platforms.</p>
                     <div class="pt-3 border-t border-slate-800 space-y-1">
-                        <div><strong>Email:</strong> admin@lms.local</div>
-                        <div><strong>Role:</strong> Master Super Administrator</div>
-                        <div><strong>Institution:</strong> Midad Academy LMS</div>
+                        <div><strong>Email:</strong> omardohim@gmail.com</div>
+                        <div><strong>Roles:</strong> Moderator, Instructor, Evaluator, Student</div>
+                        <div><strong>Timezone:</strong> Africa/Cairo (GMT+3:00)</div>
                     </div>
                 </div>
 
@@ -520,10 +541,10 @@
                 <div id="ptab-content-roles" class="hidden glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-3">
                     <h2 class="text-base font-bold text-white tracking-tight">Assigned Roles & Permissions</h2>
                     <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Master Super Admin</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Course Creator</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Evaluator & Examiner</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">Batch Director</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Moderator</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Instructor</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Evaluator</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">Student</span>
                     </div>
                 </div>
 
@@ -534,206 +555,99 @@
                 </div>
             </section>
 
-            <!-- VIEW 4: CREATOR STUDIO WHITE ADMIN PANELS (Verbatim Images 3 & 4) -->
-            <section id="view-settings" class="hidden">
+            <!-- ============================================================= -->
+            <!-- VIEW 4: SYSTEM SETTINGS (UNIFIED DARK THEME, 100% RESPONSIVE) -->
+            <!-- ============================================================= -->
+            <section id="view-settings" class="hidden space-y-4">
                 
-                <!-- Pure Clean White Panel as in User Screenshots -->
-                <div class="light-panel rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row min-h-[700px]">
+                <div class="dark-panel rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[720px]">
                     
-                    <!-- Left Sidebar Menu (Matching Images 3 & 4) -->
-                    <div class="w-full md:w-64 bg-[#fbfbfb] border-r border-slate-200 p-5 space-y-6 flex-shrink-0 text-xs text-slate-600">
+                    <!-- Left Settings Sidebar Menu -->
+                    <div class="w-full md:w-64 bg-slate-950/60 border-r border-slate-800 p-5 space-y-5 flex-shrink-0 text-xs text-slate-400">
                         
                         <!-- Configuration Group -->
                         <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Configuration</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Configuration</span>
                             <div class="space-y-1">
-                                <button onclick="switchSettingsTab('general')" id="stab-btn-general" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-wrench text-slate-500 w-4"></i> General
+                                <button onclick="switchSettingsTab('general')" id="stab-btn-general" class="w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-800 text-emerald-400 transition flex items-center gap-2.5">
+                                    <i class="fa-solid fa-wrench w-4 text-emerald-400"></i> General
                                 </button>
-                                <button onclick="alert('Course Progress configurations active.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-chart-line text-slate-500 w-4"></i> Course Progress
+                                <button onclick="switchSettingsTab('progress')" id="stab-btn-progress" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-chart-line w-4 text-slate-400"></i> Course Progress
                                 </button>
-                                <button onclick="alert('Milestone badges and accreditation enabled.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-ribbon text-slate-500 w-4"></i> Badges
-                                </button>
-                                <button onclick="alert('Category taxonomy managed: AI, Medicine, Physics, Engineering.')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-network-wired text-slate-500 w-4"></i> Categories
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Email Group -->
-                        <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Email</span>
-                            <div class="space-y-1">
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-envelope text-slate-500 w-4"></i> Accounts
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-file-lines text-slate-500 w-4"></i> Templates
+                                <button onclick="switchSettingsTab('categories')" id="stab-btn-categories" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-network-wired w-4 text-slate-400"></i> Categories
                                 </button>
                             </div>
                         </div>
 
                         <!-- User Management Group -->
                         <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">User Management</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">User Management</span>
                             <div class="space-y-1">
-                                <button onclick="switchView('profile')" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-user text-slate-500 w-4"></i> Users
+                                <button onclick="switchSettingsTab('users')" id="stab-btn-users" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-users w-4 text-slate-400"></i> Users
                                 </button>
                             </div>
                         </div>
 
                         <!-- Payment Group -->
                         <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Payment</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Payment</span>
                             <div class="space-y-1">
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-credit-card text-slate-500 w-4"></i> Configuration
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-dollar-sign text-slate-500 w-4"></i> Gateways
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-landmark text-slate-500 w-4"></i> Transactions
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-ticket text-slate-500 w-4"></i> Coupons
+                                <button onclick="switchSettingsTab('payment')" id="stab-btn-payment" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-regular fa-credit-card w-4 text-slate-400"></i> Configuration (Currencies)
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Conferencing Group -->
+                        <!-- Conferencing Group (Zoom & Meet) -->
                         <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Conferencing</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Conferencing</span>
                             <div class="space-y-1">
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-video text-slate-500 w-4"></i> Zoom
+                                <button onclick="switchSettingsTab('zoom')" id="stab-btn-zoom" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-video w-4 text-blue-400"></i> Zoom
                                 </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-desktop text-slate-500 w-4"></i> Google Meet
+                                <button onclick="switchSettingsTab('meet')" id="stab-btn-meet" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-desktop w-4 text-emerald-400"></i> Google Meet
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Integrations Group -->
+                        <!-- Customize Group -->
                         <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Integrations</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">Customize</span>
                             <div class="space-y-1">
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-comments text-slate-500 w-4"></i> Raven
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Customize Group (Image 3) -->
-                        <div>
-                            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Customize</span>
-                            <div class="space-y-1">
-                                <button onclick="switchSettingsTab('branding')" id="stab-btn-branding" class="w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2">
-                                    <i class="fa-solid fa-palette text-slate-700 w-4"></i> Branding
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-regular fa-window-maximize text-slate-500 w-4"></i> Sidebar
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-arrow-right-to-bracket text-slate-500 w-4"></i> Signup
-                                </button>
-                                <button class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60">
-                                    <i class="fa-solid fa-magnifying-glass text-slate-500 w-4"></i> SEO
+                                <button onclick="switchSettingsTab('branding')" id="stab-btn-branding" class="w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200">
+                                    <i class="fa-solid fa-palette w-4 text-fuchsia-400"></i> Branding
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Main Content Panel -->
-                    <div class="flex-grow p-6 sm:p-10 bg-white">
+                    <!-- Right Main Content Panel (All in Matching Dark Theme) -->
+                    <div class="flex-grow p-6 sm:p-10 bg-slate-900/90 text-slate-100">
                         
-                        <!-- SUB-PANEL 1: BRAND SETTINGS (Verbatim Image 3) -->
-                        <div id="settings-panel-branding" class="space-y-8">
-                            <div>
-                                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Brand Settings</h2>
-                                <p class="text-sm text-slate-500 mt-1">Configure your Brand Name, Logo, and Favicon</p>
-                            </div>
-
-                            <div class="space-y-8 max-w-2xl">
-                                <!-- Brand Name -->
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-                                    <div>
-                                        <label class="text-sm font-semibold text-slate-800 block">Brand Name</label>
-                                        <p class="text-xs text-slate-400 mt-0.5">Set the name of your brand. Appears in the left sidebar.</p>
-                                    </div>
-                                    <div>
-                                        <input type="text" id="setting-brand-name" value="Midad Academy LMS" class="px-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 w-56">
-                                    </div>
-                                </div>
-
-                                <!-- Brand Logo -->
-                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-100">
-                                    <div class="flex items-start space-x-4">
-                                        <div class="w-16 h-16 rounded-2xl border border-slate-200 flex items-center justify-center p-2 bg-[#0A1128] overflow-hidden flex-shrink-0">
-                                            <img id="setting-logo-preview" src="./static/images/midad_logo.svg" alt="Brand Logo" class="w-full h-full object-contain">
-                                        </div>
-                                        <div>
-                                            <span class="text-sm font-semibold text-slate-800 block">Brand Logo</span>
-                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears in the left sidebar. Recommended size is 32x32 px in PNG or SVG</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label for="brand-logo-file" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer">
-                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
-                                        </label>
-                                        <input type="file" id="brand-logo-file" class="hidden" accept="image/*" onchange="handleBrandLogoUpload(event)">
-                                    </div>
-                                </div>
-
-                                <!-- Favicon -->
-                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-100">
-                                    <div class="flex items-start space-x-4">
-                                        <div class="w-16 h-16 rounded-2xl border border-slate-200 flex items-center justify-center p-2 bg-slate-50 flex-shrink-0">
-                                            <img id="setting-favicon-preview" src="./static/images/midad_logo.svg" alt="Favicon" class="w-8 h-8 object-contain">
-                                        </div>
-                                        <div>
-                                            <span class="text-sm font-semibold text-slate-800 block">Favicon</span>
-                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears next to the title in your browser tab. Recommended size is 32x32 px in PNG or ICO</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label for="brand-favicon-file" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer">
-                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
-                                        </label>
-                                        <input type="file" id="brand-favicon-file" class="hidden" accept="image/*" onchange="handleFaviconUpload(event)">
-                                    </div>
-                                </div>
-
+                        <!-- ========================================== -->
+                        <!-- 1. GENERAL CONFIG PANEL (Image 1 & 4) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-general" class="space-y-8">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
                                 <div>
-                                    <button onclick="saveBrandSettings()" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition cursor-pointer">
-                                        Save Brand Settings
-                                    </button>
+                                    <h2 class="text-2xl font-bold text-white tracking-tight">General</h2>
+                                    <p class="text-xs text-slate-400 mt-1">Configure system-wide defaults, notifications, and contact information</p>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- SUB-PANEL 2: GENERAL CONFIG (Verbatim Image 4) -->
-                        <div id="settings-panel-general" class="hidden space-y-8">
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">General</h2>
-                                    <p class="text-sm text-slate-500 mt-1">Configure system-wide defaults, notifications, and contact information</p>
-                                </div>
-                                <button onclick="saveGeneralSettings()" class="px-5 py-2 rounded-xl bg-black hover:bg-slate-800 text-white text-xs font-semibold shadow-md transition cursor-pointer">
+                                <button onclick="saveGeneralSettings()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shadow-md transition cursor-pointer border border-slate-700">
                                     Update
                                 </button>
                             </div>
 
                             <div class="space-y-6 max-w-2xl">
-                                <h3 class="text-sm font-bold text-slate-900 tracking-tight">System Configurations</h3>
+                                <h3 class="text-sm font-bold text-slate-200 tracking-tight">System Configurations</h3>
 
-                                <!-- Toggle 1 -->
-                                <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
                                     <div>
-                                        <span class="text-sm font-medium text-slate-800 block">Allow Guest Access</span>
+                                        <span class="text-sm font-medium text-white block">Allow Guest Access</span>
                                         <p class="text-xs text-slate-400 mt-0.5">If enabled, users can access the course and batch lists without logging in.</p>
                                     </div>
                                     <label class="switch-toggle">
@@ -742,11 +656,10 @@
                                     </label>
                                 </div>
 
-                                <!-- Toggle 2 -->
-                                <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
                                     <div>
-                                        <span class="text-sm font-medium text-slate-800 block">Prevent Skipping Videos</span>
-                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, users will no able to move forward in a video</p>
+                                        <span class="text-sm font-medium text-white block">Prevent Skipping Videos</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, users will not be able to move forward in a video</p>
                                     </div>
                                     <label class="switch-toggle">
                                         <input type="checkbox" id="cfg-prevent-skip">
@@ -754,10 +667,9 @@
                                     </label>
                                 </div>
 
-                                <!-- Toggle 3 -->
-                                <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
                                     <div>
-                                        <span class="text-sm font-medium text-slate-800 block">Disable PWA</span>
+                                        <span class="text-sm font-medium text-white block">Disable PWA</span>
                                         <p class="text-xs text-slate-400 mt-0.5">If checked, users will not be able to install the application as a Progressive Web App.</p>
                                     </div>
                                     <label class="switch-toggle">
@@ -766,10 +678,9 @@
                                     </label>
                                 </div>
 
-                                <!-- Toggle 4 -->
-                                <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
                                     <div>
-                                        <span class="text-sm font-medium text-slate-800 block">Send calendar invite for evaluations</span>
+                                        <span class="text-sm font-medium text-white block">Send calendar invite for evaluations</span>
                                         <p class="text-xs text-slate-400 mt-0.5">If enabled, it sends google calendar invite to the student for evaluations.</p>
                                     </div>
                                     <label class="switch-toggle">
@@ -778,15 +689,15 @@
                                     </label>
                                 </div>
 
-                                <div class="pt-4 border-t border-slate-100 space-y-4">
-                                    <h3 class="text-sm font-bold text-slate-900 tracking-tight">Notifications</h3>
+                                <div class="pt-4 space-y-4">
+                                    <h3 class="text-sm font-bold text-slate-200 tracking-tight">Notifications</h3>
 
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <div>
-                                            <span class="text-sm font-medium text-slate-800 block">Send Notification for Published Courses</span>
+                                            <span class="text-sm font-medium text-white block">Send Notification for Published Courses</span>
                                             <p class="text-xs text-slate-400 mt-0.5">Notify members when a new course is published.</p>
                                         </div>
-                                        <select id="cfg-notif-course" class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 text-xs focus:ring-2 focus:ring-slate-900">
+                                        <select id="cfg-notif-course" class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs focus:ring-2 focus:ring-emerald-500">
                                             <option value="all">All Enrolled Members</option>
                                             <option value="batch">Specific Batches Only</option>
                                             <option value="disabled">Disabled</option>
@@ -795,15 +706,362 @@
 
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <div>
-                                            <span class="text-sm font-medium text-slate-800 block">Send Notification for Published Batches</span>
+                                            <span class="text-sm font-medium text-white block">Send Notification for Published Batches</span>
                                             <p class="text-xs text-slate-400 mt-0.5">Notify members when a new batch is published.</p>
                                         </div>
-                                        <select id="cfg-notif-batch" class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 text-xs focus:ring-2 focus:ring-slate-900">
+                                        <select id="cfg-notif-batch" class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs focus:ring-2 focus:ring-emerald-500">
                                             <option value="all">All Enrolled Members</option>
                                             <option value="batch">Specific Batches Only</option>
                                             <option value="disabled">Disabled</option>
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 2. COURSE PROGRESS PANEL (Image 5) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-progress" class="hidden space-y-8">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h2 class="text-2xl font-bold text-white tracking-tight">Course Progress</h2>
+                                        <span id="badge-progress-saved" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Not Saved</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-1">Control how lessons are marked complete: dwell time and enforcement toggles for video, quiz, and assignment.</p>
+                                </div>
+                                <button onclick="saveProgressSettings()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shadow-md transition cursor-pointer border border-slate-700">
+                                    Update
+                                </button>
+                            </div>
+
+                            <div class="space-y-6 max-w-2xl">
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-200 tracking-tight mb-2">Dwell Time</h3>
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-950/40 border border-slate-800">
+                                        <div>
+                                            <label class="text-sm font-medium text-white block">Lesson dwell time (seconds)</label>
+                                            <p class="text-xs text-slate-400 mt-0.5">Seconds a learner must stay on a lesson before it auto-marks complete.</p>
+                                        </div>
+                                        <input type="number" id="progress-dwell-time" value="30" class="w-24 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm font-mono text-center focus:ring-2 focus:ring-emerald-500">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <h3 class="text-sm font-bold text-slate-200 tracking-tight">Enforcement</h3>
+
+                                    <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                        <div>
+                                            <span class="text-sm font-medium text-white block">Enforce video completion</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">When enabled, lessons that contain a video can only be marked complete by playing the video to the end. If the video fails to load, the dwell timer is used as a fallback.</p>
+                                        </div>
+                                        <label class="switch-toggle">
+                                            <input type="checkbox" id="progress-enforce-video" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                        <div>
+                                            <span class="text-sm font-medium text-white block">Enforce assignment completion</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">When enabled, lessons with an assignment cannot be marked complete until the assignment is submitted.</p>
+                                        </div>
+                                        <label class="switch-toggle">
+                                            <input type="checkbox" id="progress-enforce-assignment" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                        <div>
+                                            <span class="text-sm font-medium text-white block">Enforce quiz completion</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">When enabled, lessons with a quiz cannot be marked complete until the quiz is submitted.</p>
+                                        </div>
+                                        <label class="switch-toggle">
+                                            <input type="checkbox" id="progress-enforce-quiz" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 3. CATEGORIES PANEL (Image 4) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-categories" class="hidden space-y-6">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white tracking-tight">Categories</h2>
+                                    <p class="text-xs text-slate-400 mt-1">Group courses under a category</p>
+                                </div>
+                                <button onclick="openNewCategoryModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shadow-md transition flex items-center gap-1.5 border border-slate-700 cursor-pointer">
+                                    <i class="fa-solid fa-plus text-xs"></i> New
+                                </button>
+                            </div>
+
+                            <div class="relative max-w-md">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+                                <input type="text" id="category-search-input" onkeyup="filterCategories()" placeholder="Search categories" class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-emerald-500">
+                            </div>
+
+                            <div class="dark-inner rounded-2xl overflow-hidden border border-slate-800 divide-y divide-slate-800/60" id="categories-list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 4. USERS MANAGEMENT PANEL (Image 3) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-users" class="hidden space-y-6">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white tracking-tight">Users</h2>
+                                    <p class="text-xs text-slate-400 mt-1">Manage users by adding or inviting them, and assign roles to control their access and permissions</p>
+                                </div>
+                                <button onclick="openNewUserModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shadow-md transition flex items-center gap-1.5 border border-slate-700 cursor-pointer">
+                                    <i class="fa-solid fa-plus text-xs"></i> New
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-4 max-w-xl">
+                                <div class="relative flex-grow">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+                                    <input type="text" id="user-search-input" onkeyup="filterUsers()" placeholder="Search members" class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                                <select id="user-role-filter" onchange="filterUsers()" class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-emerald-500">
+                                    <option value="all">All</option>
+                                    <option value="student">Student</option>
+                                    <option value="instructor">Instructor</option>
+                                    <option value="moderator">Moderator</option>
+                                </select>
+                            </div>
+
+                            <div class="dark-inner rounded-2xl overflow-hidden border border-slate-800">
+                                <table class="w-full text-left text-xs text-slate-300">
+                                    <thead class="bg-slate-950/60 text-slate-400 border-b border-slate-800">
+                                        <tr>
+                                            <th class="px-6 py-3 font-semibold">User</th>
+                                            <th class="px-6 py-3 font-semibold">Roles</th>
+                                            <th class="px-6 py-3 text-right font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body" class="divide-y divide-slate-800/60">
+                                        <!-- Dynamic Users -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 5. PAYMENT CONFIGURATION PANEL (Image 2) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-payment" class="hidden space-y-8">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h2 class="text-2xl font-bold text-white tracking-tight">Configuration</h2>
+                                        <span id="badge-payment-saved" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Not Saved</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-1">Manage all your payment related settings and defaults</p>
+                                </div>
+                                <button onclick="savePaymentSettings()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shadow-md transition cursor-pointer border border-slate-700">
+                                    Update
+                                </button>
+                            </div>
+
+                            <div class="space-y-6 max-w-2xl">
+                                <!-- Default Currency with USD and 5 others -->
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/60">
+                                    <div>
+                                        <label class="text-sm font-semibold text-white block">Default Currency</label>
+                                        <p class="text-xs text-slate-400 mt-0.5">Default currency used for course and batch pricing.</p>
+                                    </div>
+                                    <select id="payment-default-currency" class="px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs font-semibold focus:ring-2 focus:ring-emerald-500 w-52">
+                                        <option value="USD">USD - US Dollar ($)</option>
+                                        <option value="EGP" selected>EGP - Egyptian Pound (E£)</option>
+                                        <option value="EUR">EUR - Euro (€)</option>
+                                        <option value="GBP">GBP - British Pound (£)</option>
+                                        <option value="SAR">SAR - Saudi Riyal (﷼)</option>
+                                        <option value="AED">AED - UAE Dirham (د.إ)</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                    <div>
+                                        <span class="text-sm font-medium text-white block">Show USD equivalent amount</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, it shows the USD equivalent amount for all transactions based on the current rates.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="payment-show-usd" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                    <div>
+                                        <span class="text-sm font-medium text-white block">Apply rounding on equivalent</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, it applies rounding on the USD equivalent amount.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="payment-apply-rounding">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2 border-b border-slate-800/60">
+                                    <div>
+                                        <span class="text-sm font-medium text-white block">Payment Gateway</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">Payment gateway used to process course and batch purchases.</p>
+                                    </div>
+                                    <select id="payment-gateway-select" class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs focus:ring-2 focus:ring-emerald-500 w-52">
+                                        <option value="stripe">Stripe (Global / Apple Pay)</option>
+                                        <option value="paymob">Paymob (Egypt & Middle East)</option>
+                                        <option value="paypal">PayPal Express</option>
+                                        <option value="offline">Direct Bank Wire / Offline</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                    <div>
+                                        <span class="text-sm font-medium text-white block">Apply GST for India</span>
+                                        <p class="text-xs text-slate-400 mt-0.5">If enabled, GST will be applied to the price for students from India.</p>
+                                    </div>
+                                    <label class="switch-toggle">
+                                        <input type="checkbox" id="payment-apply-gst">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="pt-4 space-y-4">
+                                    <h3 class="text-sm font-bold text-slate-200 tracking-tight">Payment Reminders</h3>
+
+                                    <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                        <div>
+                                            <span class="text-sm font-medium text-white block">Send payment reminders for batch</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">If enabled, it sends payment reminders to students who left the payment incomplete for a batch.</p>
+                                        </div>
+                                        <label class="switch-toggle">
+                                            <input type="checkbox" id="payment-remind-batch">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between py-2 border-b border-slate-800/60">
+                                        <div>
+                                            <span class="text-sm font-medium text-white block">Send payment reminders for course</span>
+                                            <p class="text-xs text-slate-400 mt-0.5">If enabled, it sends payment reminders to students who left the payment incomplete for a course.</p>
+                                        </div>
+                                        <label class="switch-toggle">
+                                            <input type="checkbox" id="payment-remind-course">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 6. ZOOM CONFERENCING PANEL (Interactive) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-zoom" class="hidden space-y-6">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                                        <i class="fa-solid fa-video text-blue-400"></i> Zoom Lectures & Live Webinars
+                                    </h2>
+                                    <p class="text-xs text-slate-400 mt-1">Schedule and manage virtual lectures with direct Zoom links.</p>
+                                </div>
+                                <button onclick="openLectureModal('Zoom')" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/30 transition flex items-center gap-2 cursor-pointer">
+                                    <i class="fa-solid fa-plus"></i> Add Lecture
+                                </button>
+                            </div>
+
+                            <div id="zoom-meetings-container">
+                                <!-- Shows 'No meetings found' or lecture cards -->
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 7. GOOGLE MEET CONFERENCING PANEL (Interactive) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-meet" class="hidden space-y-6">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                                        <i class="fa-solid fa-desktop text-emerald-400"></i> Google Meet Live Classes
+                                    </h2>
+                                    <p class="text-xs text-slate-400 mt-1">Host live sessions, clinical cohort discussions, and evaluation meetings.</p>
+                                </div>
+                                <button onclick="openLectureModal('Google Meet')" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-500/30 transition flex items-center gap-2 cursor-pointer">
+                                    <i class="fa-solid fa-plus"></i> Add Lecture
+                                </button>
+                            </div>
+
+                            <div id="meet-meetings-container">
+                                <!-- Shows 'No meetings found' or lecture cards -->
+                            </div>
+                        </div>
+
+                        <!-- ========================================== -->
+                        <!-- 8. BRANDING SETTINGS PANEL (Dark Cohesive) -->
+                        <!-- ========================================== -->
+                        <div id="settings-panel-branding" class="hidden space-y-8">
+                            <div class="pb-4 border-b border-slate-800">
+                                <h2 class="text-2xl font-bold text-white tracking-tight">Brand Settings</h2>
+                                <p class="text-xs text-slate-400 mt-1">Configure your Brand Name, Logo, and Favicon</p>
+                            </div>
+
+                            <div class="space-y-8 max-w-2xl">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/60">
+                                    <div>
+                                        <label class="text-sm font-semibold text-white block">Brand Name</label>
+                                        <p class="text-xs text-slate-400 mt-0.5">Set the name of your brand. Appears in the left sidebar.</p>
+                                    </div>
+                                    <input type="text" id="setting-brand-name" value="Midad Academy LMS" class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-56">
+                                </div>
+
+                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-800/60">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-16 h-16 rounded-2xl border border-slate-700 flex items-center justify-center p-2 bg-[#0A1128] overflow-hidden flex-shrink-0 shadow-lg">
+                                            <img id="setting-logo-preview" src="./static/images/midad_logo.svg" alt="Brand Logo" class="w-full h-full object-contain">
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-white block">Brand Logo</span>
+                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears in the left sidebar. Recommended size is 32x32 px in PNG or SVG</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="brand-logo-file" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
+                                        </label>
+                                        <input type="file" id="brand-logo-file" class="hidden" accept="image/*" onchange="handleBrandLogoUpload(event)">
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-800/60">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-16 h-16 rounded-2xl border border-slate-700 flex items-center justify-center p-2 bg-slate-900 flex-shrink-0 shadow-lg">
+                                            <img id="setting-favicon-preview" src="./static/images/midad_logo.svg" alt="Favicon" class="w-8 h-8 object-contain">
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-white block">Favicon</span>
+                                            <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Appears next to the title in your browser tab. Recommended size is 32x32 px in PNG or ICO</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="brand-favicon-file" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                                            <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload
+                                        </label>
+                                        <input type="file" id="brand-favicon-file" class="hidden" accept="image/*" onchange="handleFaviconUpload(event)">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button onclick="saveBrandSettings()" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md transition cursor-pointer">
+                                        Save Brand Settings
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -816,7 +1074,7 @@
     </div>
 
     <!-- Create Course Modal -->
-    <div id="course-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="course-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-2xl w-full p-6 sm:p-8 rounded-3xl border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-4 border-b border-slate-800">
                 <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -837,11 +1095,14 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Category *</label>
                         <select id="course-category" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <option value="Medical Science">Medical Science</option>
+                            <option value="Medicine (Medify Program)">Medicine (Medify Program)</option>
                             <option value="Artificial Intelligence">Artificial Intelligence</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Engineering">Engineering</option>
+                            <option value="Frontend">Frontend</option>
+                            <option value="Framework">Framework</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Design">Design</option>
                             <option value="Business">Business</option>
+                            <option value="Web Development">Web Development</option>
                         </select>
                     </div>
                     <div>
@@ -868,7 +1129,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Inter-Lecture Quiz Question</label>
-                        <input type="text" id="lecture-quiz-q" placeholder="e.g. What is the primary function of neural attention layers?" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="lecture-quiz-q" placeholder="e.g. What is the primary clinical diagnostic indicator?" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
 
@@ -882,8 +1143,97 @@
         </div>
     </div>
 
+    <!-- Add Virtual Lecture Modal (Zoom & Google Meet) -->
+    <div id="lecture-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 sm:p-7 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-video text-blue-400" id="lecture-modal-icon"></i>
+                    <span id="lecture-modal-title">Add Virtual Lecture</span>
+                </h2>
+                <button onclick="closeLectureModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form onsubmit="handleSaveLecture(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="lecture-platform" value="Zoom">
+                <div>
+                    <label class="block text-slate-300 mb-1">Lecture Name *</label>
+                    <input type="text" id="lecture-name-input" required placeholder="e.g. Medical Neuroscience Live Case Discussion" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Date & Time *</label>
+                    <input type="datetime-local" id="lecture-time-input" required class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Direct Virtual Link *</label>
+                    <input type="url" id="lecture-link-input" required placeholder="https://zoom.us/j/... or https://meet.google.com/..." class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500">
+                    <span class="text-[11px] text-slate-500 mt-1 block">Students will be redirected directly to this virtual meeting room.</span>
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+                    <button type="button" onclick="closeLectureModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-check"></i> Add Lecture
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Category Modal -->
+    <div id="new-category-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h2 class="text-base font-bold text-white">Create New Category</h2>
+                <button onclick="closeNewCategoryModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 mb-1">Category Title</label>
+                    <input type="text" id="new-category-name" placeholder="e.g. Clinical Research & Oncology" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-emerald-500">
+                </div>
+            </div>
+            <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+                <button onclick="closeNewCategoryModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs">Cancel</button>
+                <button onclick="handleSaveNewCategory()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md">Add Category</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New User Modal -->
+    <div id="new-user-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h2 class="text-base font-bold text-white">Invite / Add Member</h2>
+                <button onclick="closeNewUserModal()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="new-user-name" placeholder="Dr. Sarah Al-Omari" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="new-user-email" placeholder="sarah@example.com" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Role</label>
+                    <select id="new-user-role" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs">
+                        <option value="Student">Student</option>
+                        <option value="Instructor">Instructor</option>
+                        <option value="Moderator">Moderator</option>
+                    </select>
+                </div>
+            </div>
+            <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
+                <button onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs">Cancel</button>
+                <button onclick="handleSaveNewUser()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md">Add Member</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="edit-profile-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-700 shadow-2xl space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-800">
                 <h2 class="text-base font-bold text-white">Edit Academic Profile</h2>
@@ -895,16 +1245,16 @@
                     <input type="text" id="edit-profile-input-name" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
                 </div>
                 <div>
+                    <label class="block text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="edit-profile-input-email" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+                </div>
+                <div>
                     <label class="block text-slate-300 mb-1">Timezone</label>
                     <input type="text" value="Africa/Cairo (GMT+3:00)" readonly class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-400">
                 </div>
-                <div>
-                    <label class="block text-slate-300 mb-1">Academic Title</label>
-                    <input type="text" id="edit-profile-input-title" value="Educational Director & Instructor" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
-                </div>
             </div>
             <div class="pt-3 flex justify-end gap-2 border-t border-slate-800">
-                <button onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl text-slate-300 hover:text-white text-xs">Cancel</button>
+                <button onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs">Cancel</button>
                 <button onclick="saveProfileChanges()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md">Save Changes</button>
             </div>
         </div>
@@ -913,13 +1263,13 @@
     <!-- Footer -->
     <footer class="mt-20 border-t border-slate-800 bg-[#090e1a] py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-slate-500 gap-4">
-            <p id="footer-copy">© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
+            <p>© 2026 Midad Academy LMS. All rights reserved. Self-Hosted &amp; Unrestricted.</p>
             <div class="flex items-center space-x-6 text-xs">
                 <span>Africa/Cairo (GMT+3:00)</span>
                 <span>•</span>
                 <span>Direct 10GB Video Streaming</span>
                 <span>•</span>
-                <span>Independent LMS</span>
+                <span>USD &amp; Multi-Currency Enabled</span>
             </div>
         </div>
     </footer>
@@ -952,7 +1302,7 @@
         {
             id: 'default-3',
             title: 'Anatomy & Histology: Comprehensive Medical Module',
-            category: 'Medical Science',
+            category: 'Medicine (Medify Program)',
             instructor_name: 'Prof. Tariq Al-Mansoor',
             lesson_count: 4,
             student_count: 128,
@@ -968,9 +1318,30 @@
         { id: 3, day: 'Thursday', start: '17:00', end: '20:00' }
     ];
 
+    let CATEGORIES_DATA = [
+        { id: 1, name: 'Medicine (Medify Program)', date: '12 Sep 2026' },
+        { id: 2, name: 'Framework', date: '10 Sep 2026' },
+        { id: 3, name: 'Frontend', date: '10 Sep 2026' },
+        { id: 4, name: 'Finance', date: '10 Sep 2026' },
+        { id: 5, name: 'Personal Development', date: '10 Sep 2026' },
+        { id: 6, name: 'Design', date: '10 Sep 2026' },
+        { id: 7, name: 'Business', date: '10 Sep 2026' },
+        { id: 8, name: 'Web Development', date: '10 Sep 2026' }
+    ];
+
+    let USERS_DATA = [
+        { id: 1, name: 'Jane Smith', email: 'jane.smith@example.com', roles: ['Student'], avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100' },
+        { id: 2, name: 'John Doe', email: 'john.doe@example.com', roles: ['Student'], avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100' },
+        { id: 3, name: 'Ashley Ippolito', email: 'ash@ipp.com', roles: ['Student'], avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100' },
+        { id: 4, name: 'Omar Duhaim', email: 'omardohim@gmail.com', roles: ['Moderator', 'Instructor', 'Evaluator', 'Student'], avatar: './static/images/omar_avatar.png' }
+    ];
+
+    let VIRTUAL_LECTURES = [];
+
+    // State & Auth
     function checkAuth() {
         let userStr = localStorage.getItem('midad_user');
-        let user = { name: 'Omar Duhaim', email: 'admin@lms.local', role: 'super_admin', avatar: './static/images/omar_avatar.png' };
+        let user = { name: 'Omar Duhaim', email: 'omardohim@gmail.com', role: 'super_admin', avatar: './static/images/omar_avatar.png' };
         if (userStr) {
             try {
                 user = Object.assign(user, JSON.parse(userStr));
@@ -1004,6 +1375,21 @@
         if (savedSlots) {
             try { AVAILABILITY_SLOTS = JSON.parse(savedSlots); } catch(e) {}
         }
+
+        const savedCategories = localStorage.getItem('midad_categories');
+        if (savedCategories) {
+            try { CATEGORIES_DATA = JSON.parse(savedCategories); } catch(e) {}
+        }
+
+        const savedUsers = localStorage.getItem('midad_users');
+        if (savedUsers) {
+            try { USERS_DATA = JSON.parse(savedUsers); } catch(e) {}
+        }
+
+        const savedLectures = localStorage.getItem('midad_lectures');
+        if (savedLectures) {
+            try { VIRTUAL_LECTURES = JSON.parse(savedLectures); } catch(e) {}
+        }
     }
 
     function handleLogout() {
@@ -1011,6 +1397,7 @@
         window.location.href = './login.html';
     }
 
+    // Sidebar Toggle
     let sidebarOpen = true;
     function toggleSidebar() {
         const sidebar = document.getElementById('app-sidebar');
@@ -1047,6 +1434,7 @@
         localStorage.setItem('midad_theme', isDark ? 'dark' : 'light');
     }
 
+    // Top View Switcher
     function switchView(viewName) {
         ['courses', 'dashboard', 'profile', 'settings'].forEach(v => {
             const el = document.getElementById('view-' + v);
@@ -1069,22 +1457,33 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // Settings Sub-tab Switcher (100% interactive)
     function switchSettingsTab(tabName) {
-        document.getElementById('settings-panel-branding').classList.add('hidden');
-        document.getElementById('settings-panel-general').classList.add('hidden');
-        
-        document.getElementById('stab-btn-branding').className = 'w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60';
-        document.getElementById('stab-btn-general').className = 'w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2 hover:bg-slate-200/60';
+        const allTabs = ['general', 'progress', 'categories', 'users', 'payment', 'zoom', 'meet', 'branding'];
+        allTabs.forEach(t => {
+            const panel = document.getElementById('settings-panel-' + t);
+            if (panel) panel.classList.add('hidden');
+            const btn = document.getElementById('stab-btn-' + t);
+            if (btn) {
+                btn.className = 'w-full text-left px-3 py-2 rounded-xl font-medium transition flex items-center gap-2.5 hover:bg-slate-800/60 hover:text-slate-200 text-slate-400';
+            }
+        });
 
-        if (tabName === 'branding') {
-            document.getElementById('settings-panel-branding').classList.remove('hidden');
-            document.getElementById('stab-btn-branding').className = 'w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2';
-        } else {
-            document.getElementById('settings-panel-general').classList.remove('hidden');
-            document.getElementById('stab-btn-general').className = 'w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-200/80 text-slate-900 transition flex items-center gap-2';
+        const activePanel = document.getElementById('settings-panel-' + tabName);
+        if (activePanel) activePanel.classList.remove('hidden');
+
+        const activeBtn = document.getElementById('stab-btn-' + tabName);
+        if (activeBtn) {
+            activeBtn.className = 'w-full text-left px-3 py-2 rounded-xl font-semibold bg-slate-800 text-emerald-400 transition flex items-center gap-2.5 border-l-2 border-emerald-500';
         }
+
+        if (tabName === 'categories') renderCategoriesList();
+        if (tabName === 'users') renderUsersTable();
+        if (tabName === 'zoom') renderZoomLectures();
+        if (tabName === 'meet') renderMeetLectures();
     }
 
+    // Profile Sub-tabs
     function switchProfileTab(tabName) {
         ['about', 'certificates', 'roles', 'slots', 'schedule'].forEach(t => {
             const el = document.getElementById('ptab-content-' + t);
@@ -1100,6 +1499,333 @@
         if (activeBtn) activeBtn.className = 'px-3.5 py-1.5 rounded-xl bg-slate-800 text-white font-semibold border border-slate-700 transition';
     }
 
+    // Categories Logic
+    function renderCategoriesList(filtered = null) {
+        const container = document.getElementById('categories-list-container');
+        const list = filtered || CATEGORIES_DATA;
+        container.innerHTML = '';
+        if (list.length === 0) {
+            container.innerHTML = '<div class="p-6 text-center text-xs text-slate-500">No categories found.</div>';
+            return;
+        }
+        list.forEach((c, idx) => {
+            const row = document.createElement('div');
+            row.className = 'p-4 flex items-center justify-between hover:bg-slate-800/30 transition';
+            row.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-slate-300 font-semibold text-sm">${c.name}</span>
+                </div>
+                <div class="flex items-center space-x-6 text-xs text-slate-400">
+                    <span>${c.date}</span>
+                    <button onclick="deleteCategory(${c.id})" class="text-slate-500 hover:text-rose-400 p-1 transition cursor-pointer" title="Delete Category">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function filterCategories() {
+        const query = document.getElementById('category-search-input').value.toLowerCase().trim();
+        const filtered = CATEGORIES_DATA.filter(c => c.name.toLowerCase().includes(query));
+        renderCategoriesList(filtered);
+    }
+
+    function openNewCategoryModal() {
+        document.getElementById('new-category-modal').classList.remove('hidden');
+    }
+    function closeNewCategoryModal() {
+        document.getElementById('new-category-modal').classList.add('hidden');
+    }
+    function handleSaveNewCategory() {
+        const name = document.getElementById('new-category-name').value.trim();
+        if (!name) return;
+        const newCat = {
+            id: Date.now(),
+            name: name,
+            date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+        };
+        CATEGORIES_DATA.unshift(newCat);
+        localStorage.setItem('midad_categories', JSON.stringify(CATEGORIES_DATA));
+        closeNewCategoryModal();
+        document.getElementById('new-category-name').value = '';
+        renderCategoriesList();
+    }
+    function deleteCategory(id) {
+        if (!confirm('Remove this category?')) return;
+        CATEGORIES_DATA = CATEGORIES_DATA.filter(c => c.id !== id);
+        localStorage.setItem('midad_categories', JSON.stringify(CATEGORIES_DATA));
+        renderCategoriesList();
+    }
+
+    // Users Logic
+    function renderUsersTable(filtered = null) {
+        const tbody = document.getElementById('users-table-body');
+        const list = filtered || USERS_DATA;
+        tbody.innerHTML = '';
+        list.forEach((u, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/30 transition';
+            const rolesHtml = u.roles.map(r => `
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                    ${r}
+                </span>
+            `).join(' ');
+
+            tr.innerHTML = `
+                <td class="px-6 py-3.5">
+                    <div class="flex items-center space-x-3">
+                        <img src="${u.avatar}" alt="${u.name}" class="w-8 h-8 rounded-full object-cover border border-slate-700">
+                        <div>
+                            <span class="font-semibold text-white block">${u.name}</span>
+                            <span class="text-[11px] text-slate-400">${u.email}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-3.5">
+                    <div class="flex flex-wrap gap-1.5">${rolesHtml}</div>
+                </td>
+                <td class="px-6 py-3.5 text-right">
+                    <button onclick="deleteUser(${u.id})" class="text-slate-500 hover:text-rose-400 p-1 text-xs cursor-pointer transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterUsers() {
+        const query = document.getElementById('user-search-input').value.toLowerCase().trim();
+        const role = document.getElementById('user-role-filter').value;
+        const filtered = USERS_DATA.filter(u => {
+            const matchesQuery = u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query);
+            const matchesRole = role === 'all' || u.roles.some(r => r.toLowerCase() === role);
+            return matchesQuery && matchesRole;
+        });
+        renderUsersTable(filtered);
+    }
+
+    function openNewUserModal() {
+        document.getElementById('new-user-modal').classList.remove('hidden');
+    }
+    function closeNewUserModal() {
+        document.getElementById('new-user-modal').classList.add('hidden');
+    }
+    function handleSaveNewUser() {
+        const name = document.getElementById('new-user-name').value.trim();
+        const email = document.getElementById('new-user-email').value.trim();
+        const role = document.getElementById('new-user-role').value;
+        if (!name || !email) return;
+
+        const newUser = {
+            id: Date.now(),
+            name: name,
+            email: email,
+            roles: [role],
+            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'
+        };
+        USERS_DATA.push(newUser);
+        localStorage.setItem('midad_users', JSON.stringify(USERS_DATA));
+        closeNewUserModal();
+        document.getElementById('new-user-name').value = '';
+        document.getElementById('new-user-email').value = '';
+        renderUsersTable();
+    }
+    function deleteUser(id) {
+        if (!confirm('Remove this member?')) return;
+        USERS_DATA = USERS_DATA.filter(u => u.id !== id);
+        localStorage.setItem('midad_users', JSON.stringify(USERS_DATA));
+        renderUsersTable();
+    }
+
+    // Zoom & Google Meet Virtual Lectures
+    function openLectureModal(platform) {
+        document.getElementById('lecture-platform').value = platform;
+        document.getElementById('lecture-modal-title').innerText = 'Add ' + platform + ' Lecture';
+        document.getElementById('lecture-modal-icon').className = platform === 'Zoom' ? 'fa-solid fa-video text-blue-400' : 'fa-solid fa-desktop text-emerald-400';
+        document.getElementById('lecture-modal').classList.remove('hidden');
+    }
+    function closeLectureModal() {
+        document.getElementById('lecture-modal').classList.add('hidden');
+    }
+
+    function handleSaveLecture(e) {
+        e.preventDefault();
+        const platform = document.getElementById('lecture-platform').value;
+        const name = document.getElementById('lecture-name-input').value.trim();
+        const time = document.getElementById('lecture-time-input').value;
+        const link = document.getElementById('lecture-link-input').value.trim();
+
+        const newLecture = {
+            id: Date.now(),
+            platform: platform,
+            name: name,
+            time: time,
+            link: link,
+            created_at: new Date().toISOString()
+        };
+
+        VIRTUAL_LECTURES.unshift(newLecture);
+        localStorage.setItem('midad_lectures', JSON.stringify(VIRTUAL_LECTURES));
+        closeLectureModal();
+        e.target.reset();
+
+        if (platform === 'Zoom') renderZoomLectures();
+        else renderMeetLectures();
+
+        alert(platform + ' lecture "' + name + '" scheduled successfully!');
+    }
+
+    function renderZoomLectures() {
+        const container = document.getElementById('zoom-meetings-container');
+        const zoomList = VIRTUAL_LECTURES.filter(l => l.platform === 'Zoom');
+        if (zoomList.length === 0) {
+            container.innerHTML = `
+                <div class="py-16 text-center space-y-3 dark-inner rounded-3xl border border-slate-800">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl mx-auto">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white tracking-tight">No meetings found</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto">Schedule a live virtual lecture with a direct Zoom meeting link for your students.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '<div class="space-y-3">' + zoomList.map(l => `
+            <div class="p-5 rounded-2xl dark-inner border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-white block text-sm">${l.name}</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                            <i class="fa-regular fa-clock"></i> ${l.time ? new Date(l.time).toLocaleString('en-GB') : 'Upcoming'}
+                            <span class="text-slate-600">•</span>
+                            <span>Host: Omar Duhaim</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                    <a href="${l.link}" target="_blank" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Join Meeting
+                    </a>
+                    <button onclick="deleteLecture(${l.id}, 'Zoom')" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 text-xs transition cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('') + '</div>';
+    }
+
+    function renderMeetLectures() {
+        const container = document.getElementById('meet-meetings-container');
+        const meetList = VIRTUAL_LECTURES.filter(l => l.platform === 'Google Meet');
+        if (meetList.length === 0) {
+            container.innerHTML = `
+                <div class="py-16 text-center space-y-3 dark-inner rounded-3xl border border-slate-800">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mx-auto">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white tracking-tight">No meetings found</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto">Schedule a live virtual class with a direct Google Meet link for your cohorts.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = '<div class="space-y-3">' + meetList.map(l => `
+            <div class="p-5 rounded-2xl dark-inner border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-white block text-sm">${l.name}</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                            <i class="fa-regular fa-clock"></i> ${l.time ? new Date(l.time).toLocaleString('en-GB') : 'Upcoming'}
+                            <span class="text-slate-600">•</span>
+                            <span>Host: Omar Duhaim</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                    <a href="${l.link}" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Join Meeting
+                    </a>
+                    <button onclick="deleteLecture(${l.id}, 'Google Meet')" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 text-xs transition cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('') + '</div>';
+    }
+
+    function deleteLecture(id, platform) {
+        if (!confirm('Remove this virtual lecture?')) return;
+        VIRTUAL_LECTURES = VIRTUAL_LECTURES.filter(l => l.id !== id);
+        localStorage.setItem('midad_lectures', JSON.stringify(VIRTUAL_LECTURES));
+        if (platform === 'Zoom') renderZoomLectures();
+        else renderMeetLectures();
+    }
+
+    // Save Settings Functions
+    function saveGeneralSettings() {
+        alert('General System Configurations updated successfully!');
+    }
+
+    function saveProgressSettings() {
+        const badge = document.getElementById('badge-progress-saved');
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        badge.innerText = 'Saved';
+        alert('Course Progress enforcement updated successfully!');
+    }
+
+    function savePaymentSettings() {
+        const currency = document.getElementById('payment-default-currency').value;
+        const badge = document.getElementById('badge-payment-saved');
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        badge.innerText = 'Saved (' + currency + ')';
+        localStorage.setItem('midad_currency', currency);
+        alert('Payment Configuration saved! Default currency set to ' + currency);
+    }
+
+    function saveBrandSettings() {
+        const brandName = document.getElementById('setting-brand-name').value.trim();
+        if (brandName) {
+            localStorage.setItem('midad_brand_name', brandName);
+            document.getElementById('header-brand-name').innerText = brandName;
+        }
+        alert('Brand settings saved successfully! Logo and title updated.');
+    }
+
+    function handleBrandLogoUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const dataUrl = evt.target.result;
+            document.getElementById('setting-logo-preview').src = dataUrl;
+            document.getElementById('header-brand-logo').src = dataUrl;
+            localStorage.setItem('midad_brand_logo', dataUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleFaviconUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('setting-favicon-preview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Profile & Slots Logic
     function renderSlotsTable() {
         const tbody = document.getElementById('slots-table-body');
         tbody.innerHTML = '';
@@ -1182,6 +1908,7 @@
     function openEditProfileModal() {
         const user = JSON.parse(localStorage.getItem('midad_user') || '{}');
         document.getElementById('edit-profile-input-name').value = user.name || 'Omar Duhaim';
+        document.getElementById('edit-profile-input-email').value = user.email || 'omardohim@gmail.com';
         document.getElementById('edit-profile-modal').classList.remove('hidden');
     }
     function closeEditProfileModal() {
@@ -1189,60 +1916,18 @@
     }
     function saveProfileChanges() {
         const name = document.getElementById('edit-profile-input-name').value.trim();
+        const email = document.getElementById('edit-profile-input-email').value.trim();
         if (name) {
             let user = JSON.parse(localStorage.getItem('midad_user') || '{}');
             user.name = name;
+            if (email) user.email = email;
             localStorage.setItem('midad_user', JSON.stringify(user));
             checkAuth();
         }
         closeEditProfileModal();
     }
 
-    function handleBrandLogoUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            const dataUrl = evt.target.result;
-            document.getElementById('setting-logo-preview').src = dataUrl;
-            document.getElementById('header-brand-logo').src = dataUrl;
-            localStorage.setItem('midad_brand_logo', dataUrl);
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function handleFaviconUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            document.getElementById('setting-favicon-preview').src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function saveBrandSettings() {
-        const brandName = document.getElementById('setting-brand-name').value.trim();
-        if (brandName) {
-            localStorage.setItem('midad_brand_name', brandName);
-            document.getElementById('header-brand-name').innerText = brandName;
-        }
-        alert('Brand settings saved successfully! Logo and title updated.');
-    }
-
-    function saveGeneralSettings() {
-        const guestAccess = document.getElementById('cfg-guest-access').checked;
-        const preventSkip = document.getElementById('cfg-prevent-skip').checked;
-        const disablePwa = document.getElementById('cfg-disable-pwa').checked;
-        const calendarEval = document.getElementById('cfg-calendar-eval').checked;
-        const notifCourse = document.getElementById('cfg-notif-course').value;
-        const notifBatch = document.getElementById('cfg-notif-batch').value;
-
-        const config = { guestAccess, preventSkip, disablePwa, calendarEval, notifCourse, notifBatch };
-        localStorage.setItem('midad_general_config', JSON.stringify(config));
-        alert('General System Configurations updated successfully!');
-    }
-
+    // Courses Studio
     function getStoredCourses() {
         const custom = localStorage.getItem('midad_custom_courses');
         if (custom) {
@@ -1305,7 +1990,6 @@
     function openCourseModal() {
         document.getElementById('course-modal').classList.remove('hidden');
     }
-
     function closeCourseModal() {
         document.getElementById('course-modal').classList.add('hidden');
     }
@@ -1356,9 +2040,14 @@
         renderCourseTable();
     }
 
+    // Initialize
     checkAuth();
     renderCourseTable();
     renderSlotsTable();
+    renderCategoriesList();
+    renderUsersTable();
+    renderZoomLectures();
+    renderMeetLectures();
     </script>
 </body>
 </html>

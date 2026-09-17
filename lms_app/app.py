@@ -34,6 +34,8 @@ app.config["UPLOAD_FOLDER"] = UPLOADS_DIR
 # Ensure DB is initialized
 db.init_db()
 
+DOCS_FOLDER = os.path.join(os.path.dirname(BASE_DIR), "docs")
+
 
 # ------------------------------------------------------------------------------
 # Context Processor for Global Template Data
@@ -244,6 +246,16 @@ def studio():
 
     conn.close()
     return render_template("studio.html", courses=courses)
+
+
+@app.route("/studio.html")
+def serve_studio_html():
+    return send_from_directory(DOCS_FOLDER, "studio.html")
+
+
+@app.route("/docs/<path:filename>")
+def serve_docs_file(filename):
+    return send_from_directory(DOCS_FOLDER, filename)
 
 
 @app.route("/studio/course/new", methods=["GET", "POST"])
