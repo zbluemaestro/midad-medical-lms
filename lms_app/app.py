@@ -253,6 +253,11 @@ def serve_studio_html():
     return send_from_directory(DOCS_FOLDER, "studio.html")
 
 
+@app.route("/login.html")
+def serve_login_html():
+    return send_from_directory(DOCS_FOLDER, "login.html")
+
+
 @app.route("/docs/<path:filename>")
 def serve_docs_file(filename):
     return send_from_directory(DOCS_FOLDER, filename)
