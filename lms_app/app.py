@@ -258,6 +258,16 @@ def serve_login_html():
     return send_from_directory(DOCS_FOLDER, "login.html")
 
 
+@app.route("/student.html")
+def serve_student_html():
+    return send_from_directory(DOCS_FOLDER, "student.html")
+
+
+@app.route("/static/db.js")
+def serve_static_db_js():
+    return send_from_directory(os.path.join(DOCS_FOLDER, "static"), "db.js")
+
+
 @app.route("/docs/<path:filename>")
 def serve_docs_file(filename):
     return send_from_directory(DOCS_FOLDER, filename)

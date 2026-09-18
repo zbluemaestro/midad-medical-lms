@@ -1320,10 +1320,27 @@
     </div>
 
     <!-- ============================================================= -->
+    <script src="./static/db.js"></script>
     <!-- JAVASCRIPT LOGIC -->
     <!-- ============================================================= -->
     <script>
-    let currentMode = 'admin'; // 'admin' or 'student'
+    let currentMode = 'admin';
+    // STRICT ADMIN GUARD: Restricted exclusively to Omar Duhaim
+    function enforceAdminOnly() {
+        const user = MidadDB.getCurrentUser();
+        if (!user) {
+            window.location.href = './login.html';
+            return false;
+        }
+        if (user.role !== 'admin') {
+            alert('Access Restricted: The Creator Studio and Admin Settings are restricted exclusively to Administrator Omar Duhaim. Redirecting to your Student Learning Portal...');
+            window.location.href = './student.html';
+            return false;
+        }
+        return true;
+    }
+    if (!enforceAdminOnly()) return;
+ // 'admin' or 'student'
     let currentPendingRoom = null;
 
     // Default seed data
